@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "necro.livelier.pokemon.fabric.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"GolurkMixin",
+		"LightningMixin",
+		"CreeperEntityMixin",
+		"PokemonEntityMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
