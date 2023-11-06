@@ -12,7 +12,7 @@ Applies an aura effect to the Pokemon's owner if they are within 8 blocks that l
 
 
 ## Effects applied to Pokemon
-Applies a permanent status effect on the Pokemon.
+Applies a permanent* status effect on the Pokemon.
 - Disguise / Ice Face: Applies Absorption
 - Heatproof: Applies Fire Resistance
 - Swift Swim: Applies Dolphin's Grace
@@ -29,15 +29,15 @@ Applies an aura effect on all nearby entities besides itself.
 
 
 ## Effects applied when a Pokemon is attacked.
-Applies an effect when the Pokemon is attacked by another entity making contact (ie. not from a projectile).
+Applies an effect when the Pokemon is attacked by another entity making contact (ie. not from a projectile)
 - Rough Skin / Iron Barbs: Damages the attacker
 - Effect Spore / Poison Point: Chance to inflict Poison
 - Flame Body: Chance to light attacker on fire
 - Cursed Body: Chance to inflict Mining Fatigue
 - Tangling Hair / Static / Gooey: Chance to inflict Slowness
-- Pressure: Items used to damage the Pokemon will lose durability faster.
+- Pressure: Items used to damage the Pokemon will lose durability faster
 - Magic Bounce / Synchronize / Mirror Armor: Status effects will be reflected back to the attacker
-- Aftermath: Will create an explosion on death
+- Aftermath: Will create an explosion on death that does not affect the environment
 
 
 ## Immunities
@@ -54,12 +54,14 @@ Unique effects that are uncategorised.
 - Ball Fetch: Will retrieve an Owner's Poke Ball that failed to capture a Pokemon
 - Fire Types / Sudowoodo / Bonsly: Will escape to shade during rain and thunderstorm
 - Bad Dreams: Players who sleep nearby will wake up and take damage
-- Nosepass: Will naturally face 0,0
+~~- Nosepass: Will naturally face 0,0~~ This is in the base mod now
 - Unaware: The Pokemon will take fixed damage from an attacker no matter their weapon
-- Lightning Rod: If lightning strikes nearby it will be redirected to the Pokemon and have no effect.
+- Lightning Rod: If lightning strikes nearby it will be redirected to the Pokemon and have no effect
+- Abra: Will randomly teleport around
 
 
 ## Other
 Vanilla Minecraft mechanics modified to incorporate Cobblemon.
-- Golurk: You can craft Golurk using Oxidized Copper Blocks the same way you would build an Iron Golem.
-- Creepers: Creepers flee from cat Pokemon.
+- Golurk: You can craft Golurk using Oxidized Copper Blocks the same way you would build an Iron Golem
+- Creepers: Creepers flee from cat Pokemon
+- Mining: Mining in the overworld has a small chance to spawn a Geodude
