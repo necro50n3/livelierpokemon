@@ -3,32 +3,29 @@ package necro.livelier.pokemon.fabric.behaviors;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 
 import necro.livelier.pokemon.fabric.LivelierPokemon;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.NoPenaltyTargeting;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.FleeEntityGoal;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Iterator;
 
-public class CreeperFleeCatPokemonGoal<T extends LivingEntity> extends FleeEntityGoal<T>
+public class CreeperFleeCatPokemonGoal<T extends LivingEntity> extends AvoidEntityGoal<T>
 {
     private List<T> entityList;
-    //private String[] catPokemon;
-    public CreeperFleeCatPokemonGoal(PathAwareEntity mob, Class<T> fleeFromType, float distance, double slowSpeed,
+    public CreeperFleeCatPokemonGoal(PathfinderMob mob, Class<T> fleeFromType, float distance, double slowSpeed,
             double fastSpeed) {
         super(mob, fleeFromType, distance, slowSpeed, fastSpeed);
-        //this.catPokemon = getCatPokemon();
     }
     
     @Override
-    public boolean canStart()
+    public boolean canUse()
     {
-        entityList = this.mob.world.getEntitiesByClass(this.classToFleeFrom, this.mob.getBoundingBox().expand(this.fleeDistance, 3.0, this.fleeDistance), livingEntity -> true);
+        entityList = this.mob.level().getEntitiesOfClass(this.avoidClass, this.mob.getBoundingBox().expandTowards(this.maxDist, 3.0, this.maxDist), livingEntity -> true);
         if (entityList.isEmpty())
             return false;
-        if (this.classToFleeFrom != PokemonEntity.class)
+        if (this.avoidClass != PokemonEntity.class)
             return false;
         Iterator<T> iterator = entityList.iterator();
         
@@ -44,18 +41,21 @@ public class CreeperFleeCatPokemonGoal<T extends LivingEntity> extends FleeEntit
         
         if (entityList.isEmpty())
             return false;
-        this.targetEntity = this.mob.world.getClosestEntity(entityList, TargetPredicate.createAttackable().setBaseMaxDistance(this.fleeDistance).setPredicate(inclusionSelector.and(extraInclusionSelector)), this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
-        if (this.targetEntity == null) {
+        this.toAvoid = this.mob.level().getNearestEntity(this.mob.level().getEntitiesOfClass(this.avoidClass, this.mob.getBoundingBox().inflate((double)this.maxDist, 3.0, (double)this.maxDist), (livingEntity) -> {
+            return true;
+        }), this.avoidEntityTargeting, this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
+        if (this.toAvoid == null) {
             return false;
+        } else {
+            Vec3 vec3 = DefaultRandomPos.getPosAway(this.mob, 16, 7, this.toAvoid.position());
+            if (vec3 == null) {
+                return false;
+            } else if (this.toAvoid.distanceToSqr(vec3.x, vec3.y, vec3.z) < this.toAvoid.distanceToSqr(this.mob)) {
+                return false;
+            } else {
+                this.path = this.pathNav.createPath(vec3.x, vec3.y, vec3.z, 0);
+                return this.path != null;
+            }
         }
-        Vec3d vec3d = NoPenaltyTargeting.findFrom(this.mob, 16, 7, ((PokemonEntity)this.targetEntity).getPos());
-        if (vec3d == null) {
-            return false;
-        }
-        if (((PokemonEntity)this.targetEntity).squaredDistanceTo(vec3d.x, vec3d.y, vec3d.z) < ((PokemonEntity)this.targetEntity).squaredDistanceTo(this.mob)) {
-            return false;
-        }
-        this.fleePath = this.fleeingEntityNavigation.findPathTo(vec3d.x, vec3d.y, vec3d.z, 0);
-        return this.fleePath != null;
     }
 }

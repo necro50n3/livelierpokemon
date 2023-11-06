@@ -3,9 +3,9 @@ package necro.livelier.pokemon.fabric.behaviors;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 
 import necro.livelier.pokemon.fabric.LivelierPokemonManager;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public class OwnerEffectGoal extends Goal
 {
@@ -22,26 +22,26 @@ public class OwnerEffectGoal extends Goal
 
     public void applyEffect()
     {
-        StatusEffectInstance effect = null;
+        MobEffectInstance effect = null;
         if (!parameter.equals("clear"))
         {
             int amplifier = (pokemonEntity.getPokemon().getFriendship() >= 220 ? 1 : 0);
             effect = LivelierPokemonManager.getStatusEffect(parameter, 320, amplifier);
             if (effect != null)
             {
-                if (owner.canHaveStatusEffect(effect))
-                    owner.addStatusEffect(effect, pokemonEntity); 
+                if (owner.canBeAffected(effect))
+                    owner.addEffect(effect, pokemonEntity); 
             }
         }
         else
         {
             if(Math.random() < 0.30)
-                owner.clearStatusEffects();
+                owner.removeAllEffects();
         }
     }
 
     @Override
-    public boolean canStart()
+    public boolean canUse()
     {
         if (owner == null)
         {
@@ -54,7 +54,7 @@ public class OwnerEffectGoal extends Goal
     @Override
     public void start()
     {
-        if(this.canStart() && pokemonEntity.distanceTo(pokemonEntity.getOwner()) < 8)
+        if(this.canUse() && pokemonEntity.distanceTo(pokemonEntity.getOwner()) < 8)
             this.applyEffect();
     }
 

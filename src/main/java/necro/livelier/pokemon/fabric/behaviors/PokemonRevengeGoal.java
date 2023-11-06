@@ -3,17 +3,18 @@ package necro.livelier.pokemon.fabric.behaviors;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 
 import necro.livelier.pokemon.fabric.LivelierPokemonManager;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.GameRules;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerPlayer;
 
-public class PokemonRevengeGoal extends RevengeGoal{
+public class PokemonRevengeGoal extends HurtByTargetGoal{
     private String parameter;
 
     public PokemonRevengeGoal(PokemonEntity pokemonEntity, String parameter)
@@ -23,14 +24,14 @@ public class PokemonRevengeGoal extends RevengeGoal{
     }
 
     @Override
-    public boolean canStart()
+    public boolean canUse()
     {
-        int i = this.mob.getLastAttackedTime();
-        LivingEntity livingEntity = this.mob.getAttacker();
-        if (i == this.lastAttackedTime || livingEntity == null) {
+        int i = this.mob.getLastHurtByMobTimestamp();
+        LivingEntity livingEntity = this.mob.getLastAttacker();
+        if (i == this.timestamp || livingEntity == null) {
             return false;
         }
-        if (livingEntity.getType() == EntityType.PLAYER && this.mob.world.getGameRules().getBoolean(GameRules.UNIVERSAL_ANGER)) {
+        if (livingEntity.getType() == EntityType.PLAYER && this.mob.level().getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)) {
             return false;
         }
         return true;
@@ -39,68 +40,67 @@ public class PokemonRevengeGoal extends RevengeGoal{
     @Override
     public void start()
     {
-        this.mob.setTarget(this.mob.getAttacker());
-        this.target = this.mob.getTarget();
-        this.lastAttackedTime = this.mob.getLastAttackedTime();
-        this.damageType(target);
+        this.mob.setTarget(this.mob.getLastAttacker());
+        this.targetMob = this.mob.getTarget();
+        this.timestamp = this.mob.getLastHurtByMobTimestamp();
+        this.damageType(this.targetMob);
     }
 
     @Override
-    public boolean shouldContinue()
+    public boolean canContinueToUse()
     {
         return false;
     }
 
     public void damageType(LivingEntity target)
     {
-        if (this.mob.getRecentDamageSource() != null)
+        if (this.mob.getLastDamageSource() != null)
         {
             switch (parameter)
             {
                 case "damage":
-                    if (!mob.getRecentDamageSource().isProjectile())
-                        target.damage(DamageSource.thorns(mob).setBypassesArmor(), 4);
-                    break;
-                case "poison":
-                case "slowness":
-                case "mining_fatigue":
-                    if (!mob.getRecentDamageSource().isProjectile())
+                    if (!this.mob.getLastDamageSource().is(DamageTypes.MOB_PROJECTILE) && !this.mob.getLastDamageSource().is(DamageTypes.ARROW) && !this.mob.getLastDamageSource().is(DamageTypes.THROWN))
                     {
-                        StatusEffectInstance effect = LivelierPokemonManager.getStatusEffect(parameter, 100, 1);
-                        if (effect != null)
-                        {
-                            if (Math.random() < 0.30 && target.canHaveStatusEffect(effect))
-                                target.addStatusEffect(effect, this.mob);
-                        }
+                        target.hurt(this.mob.level().damageSources().thorns(this.mob), 4.0F);
                     }
                     break;
                 case "fire":
-                    if (!mob.getRecentDamageSource().isProjectile())
+                    if (!this.mob.getLastDamageSource().is(DamageTypes.MOB_PROJECTILE) && !this.mob.getLastDamageSource().is(DamageTypes.ARROW) && !this.mob.getLastDamageSource().is(DamageTypes.THROWN))
                     {
-                        if (Math.random() < 0.30 && !target.isFireImmune())
-                            target.setOnFireFor(3);
+                        if (Math.random() < 0.30 && !target.fireImmune())
+                            target.setSecondsOnFire(3);
                     }
                     break;
                 case "durability":
-                    if (this.mob.getRecentDamageSource().getAttacker() instanceof PlayerEntity)
+                    if (this.mob.getLastAttacker() instanceof Player)
                     {
-                        PlayerEntity player = (PlayerEntity) this.mob.getRecentDamageSource().getAttacker();
-                        ItemStack item = player.getMainHandStack();
-                        if (item.isDamageable())
+                        Player player = (Player) this.mob.getLastAttacker();
+                        ItemStack item = player.getMainHandItem();
+                        if (item.isDamageableItem())
                         {
-                            item.damage(3, player, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
+                            item.hurt(3, RandomSource.create(), (ServerPlayer) player);
                         }
                     }
                     break;
                 case "hide":
-                    StatusEffectInstance invisibility = LivelierPokemonManager.getStatusEffect("invisibility", 100, 1);
+                    MobEffectInstance invisibility = LivelierPokemonManager.getStatusEffect("invisibility", 100, 1);
                     if (invisibility != null)
                     {
-                        if (Math.random() < 0.30 && target.canHaveStatusEffect(invisibility))
-                            this.mob.addStatusEffect(invisibility, this.mob);
+                        if (Math.random() < 0.30 && target.canBeAffected(invisibility))
+                            this.mob.addEffect(invisibility, this.mob);
                     }
                     break;
                 default:
+                    if (!mob.getLastDamageSource().is(DamageTypes.MOB_PROJECTILE) || mob.getLastDamageSource().is(DamageTypes.ARROW) || mob.getLastDamageSource().is(DamageTypes.THROWN))
+                    {
+                        MobEffectInstance effect = LivelierPokemonManager.getStatusEffect(parameter, 100, 1);
+                        if (effect != null)
+                        {
+                            if (Math.random() < 0.30 && target.canBeAffected(effect))
+                                target.addEffect(effect, this.mob);
+                        }
+                    }
+                    break;
             }
         }
     }

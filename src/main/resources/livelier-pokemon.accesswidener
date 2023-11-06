@@ -1,0 +1,10 @@
+accessWidener	v2	named
+accessible   field   net/minecraft/world/entity/Mob                                 goalSelector                Lnet/minecraft/world/entity/ai/goal/GoalSelector;
+accessible   field   net/minecraft/world/entity/Mob                                 targetSelector              Lnet/minecraft/world/entity/ai/goal/GoalSelector;
+accessible   field   net/minecraft/world/entity/ai/goal/target/HurtByTargetGoal     timestamp                   I
+accessible   field   net/minecraft/world/entity/ai/goal/FleeSunGoal                 speedModifier               D
+accessible   field   net/minecraft/world/entity/ai/goal/FleeSunGoal                 level                       Lnet/minecraft/world/level/Level;
+accessible   field   net/minecraft/world/entity/Entity                              level                       Lnet/minecraft/world/level/Level;
+accessible   field   net/minecraft/world/entity/ai/goal/AvoidEntityGoal             avoidEntityTargeting        Lnet/minecraft/world/entity/ai/targeting/TargetingConditions;
+accessible   field   net/minecraft/world/entity/ai/goal/FollowMobGoal               followingMob                Lnet/minecraft/world/entity/Mob;
+accessible   field   net/minecraft/world/level/levelgen/Heightmap                   MATERIAL_MOTION_BLOCKING    Ljava/util/function/Predicate;

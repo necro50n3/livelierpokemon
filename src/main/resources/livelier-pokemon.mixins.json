@@ -6,7 +6,9 @@
 		"GolurkMixin",
 		"LightningMixin",
 		"CreeperEntityMixin",
-		"PokemonEntityMixin"
+		"PokemonEntityMixin",
+		"SpawnPokemonMixin",
+		"VillagerEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

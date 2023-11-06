@@ -1,36 +1,28 @@
 package necro.livelier.pokemon.fabric.behaviors;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import net.minecraft.entity.ai.goal.EscapeSunlightGoal;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 
-public class EscapeRainGoal extends EscapeSunlightGoal {
-    private final World world;
+public class EscapeRainGoal extends FleeSunGoal {
     private PokemonEntity pokemonEntity;
 
     public EscapeRainGoal(PokemonEntity pokemonEntity, String speed)
     {
         super(pokemonEntity, Double.parseDouble(speed));
         this.pokemonEntity = pokemonEntity;
-        this.world = pokemonEntity.world;
     }
     
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         if (pokemonEntity.getTarget() != null) {
             return false;
         }
-        if (!world.isRaining() && !world.isThundering()) {
+        if (!this.level.isRaining() && !this.level.isThundering()) {
             return false;
         }
-        if (!world.isSkyVisible(pokemonEntity.getBlockPos())) {
+        if (!this.level.canSeeSky(pokemonEntity.blockPosition())) {
             return false;
         }
-        return super.targetShadedPos();
-    }
-
-    @Override
-    public void start() {
-        super.start();
+        return super.setWantedPos();
     }
 }

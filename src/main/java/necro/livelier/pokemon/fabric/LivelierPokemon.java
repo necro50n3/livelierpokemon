@@ -2,15 +2,22 @@ package necro.livelier.pokemon.fabric;
 
 import necro.livelier.pokemon.fabric.config.LivelierPokemonConfig;
 import com.cobblemon.mod.common.Cobblemon;
-//import com.cobblemon.mod.common.api.Priority;
-//import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import com.cobblemon.mod.common.CobblemonEntities;
+import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.types.ElementalType;
-//import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.text.MutableText;
-//import kotlin.Unit;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.network.chat.MutableComponent;
+
+import kotlin.Unit;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +25,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import com.google.gson.Gson;
@@ -47,7 +53,8 @@ public class LivelierPokemon implements ModInitializer {
             String file = "/config/livelierpokemon/LivelierPokemonConfig.json";
             Gson gson = new Gson();
             String json = new String(Files.readAllBytes(Paths.get(location + file)));
-            map = gson.fromJson(json, HashMap.class);
+            TypeToken<Map<String, Map<String, String>>> type = new TypeToken<Map<String, Map<String, String>>>(){};
+            map = gson.fromJson(json, type);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -58,49 +65,77 @@ public class LivelierPokemon implements ModInitializer {
             String file = "/config/livelierpokemon/CatPokemonConfig.json";
             Gson gson = new Gson();
             String json = new String(Files.readAllBytes(Paths.get(location + file)));
-            catSet = gson.fromJson(json, Set.class);
+            TypeToken<Set<String>> type = new TypeToken<Set<String>>(){};
+            catSet = gson.fromJson(json, type);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //this.onEntitySpawn();
+        this.onBlockBreak();
+        this.onEntitySpawn();
     }
-    /*
-     * Future code to be implemented on Cobblemon Version 1.4
-     * See @PokemonEntityMixin for current implementation
-     */
-    /*
+    
     public void onEntitySpawn()
     {
-        CobblemonEvents.INSTANCE.LEVEL_UP_EVENT.subscribe(Priority.NORMAL, event -> {
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, event -> {
             PokemonEntity pokemonEntity = (PokemonEntity)event.getPokemon().getEntity();
             ArrayList<String> keyList = isNameInKey(getAttributes(pokemonEntity.getPokemon()));
             if (keyList.size() > 0)
             {
                 for (String validKey : keyList)
                 {
-                    if (map.get(validKey).get("trigger").equals("onSend"))
+                    if (map.get(validKey).get("trigger").equals("onSend") || map.get(validKey).get("trigger").equals("onBoth"))
                         new LivelierPokemonManager(pokemonEntity, map.get(validKey)).behaviourManager();
                 }
             }    
             return Unit.INSTANCE;
         });
-        CobblemonEvents.INSTANCE.POKEMON_ENTITY_SAVE.subscribe(Priority.NORMAL, event -> {
+        CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, event -> {
+            PokemonEntity pokemonEntity = (PokemonEntity)event.getEntity();
+            wildSpawn(pokemonEntity);
+            return Unit.INSTANCE;
+        });
+        CobblemonEvents.POKEMON_ENTITY_LOAD.subscribe(Priority.NORMAL, event -> {
             PokemonEntity pokemonEntity = (PokemonEntity)event.getPokemonEntity();
-            ArrayList<String> keyList = isNameInKey(getAttributes(pokemonEntity.getPokemon()));
-            if (keyList.size() > 0)
-            {
-                for (String validKey : keyList)
-                {
-                    if (map.get(validKey).get("trigger").equals("onSpawn"))
-                        new LivelierPokemonManager(pokemonEntity, map.get(validKey)).behaviourManager();
-                }
-            }     
+            wildSpawn(pokemonEntity);
             return Unit.INSTANCE;
         });
     }
-    */
+
+    public static PokemonEntity wildSpawn(PokemonEntity pokemonEntity)
+    {
+        ArrayList<String> keyList = isNameInKey(getAttributes(pokemonEntity.getPokemon()));
+        if (keyList.size() > 0)
+        {
+            for (String validKey : keyList)
+            {
+                if (map.get(validKey).get("trigger").equals("onSpawn") || map.get(validKey).get("trigger").equals("onBoth"))
+                    new LivelierPokemonManager(pokemonEntity, map.get(validKey)).behaviourManager();
+            }
+        }
+        return pokemonEntity;
+    }
+
+    public void onBlockBreak()
+    {
+        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
+            if (state.is(BlockTags.BASE_STONE_OVERWORLD))
+            {
+                if (Math.random() * 1000 < 2)
+                {
+                    EntityType<PokemonEntity> pokemonEntityType =  CobblemonEntities.POKEMON;
+                    Pokemon pokemon = new Pokemon();
+                    pokemon.setSpecies(PokemonSpecies.INSTANCE.getByName("geodude"));
+                    pokemon.setLevel((int) (Math.random() * Math.min(12, Cobblemon.config.getMaxPokemonLevel()) + 1));
+                    pokemon.initializeMoveset(true);
+                    PokemonEntity pokemonEntity = new PokemonEntity(world, pokemon, pokemonEntityType);
+                    pokemonEntity.refreshDimensions();
+                    world.addFreshEntity(pokemonEntity);
+                }
+            }
+        });
+    }
 
     public static ArrayList<String> isNameInKey(ArrayList<String> properties)
     {
@@ -118,7 +153,7 @@ public class LivelierPokemon implements ModInitializer {
         ArrayList<String> properties = new ArrayList<String>();
         Ability pokemonAbility = pokemon.getAbility();
         properties.add(pokemonAbility.getName());
-        MutableText pokemonName = pokemon.getDisplayName();
+        MutableComponent pokemonName = pokemon.getDisplayName();
         properties.add(pokemonName.getString());
         ElementalType pokemonPType = pokemon.getPrimaryType();
         properties.add(pokemonPType.getName());

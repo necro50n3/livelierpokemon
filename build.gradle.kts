@@ -1,14 +1,12 @@
 plugins {
     id("java")
-    id("dev.architectury.loom") version("1.1-SNAPSHOT")
+    id("dev.architectury.loom") version("1.2-SNAPSHOT")
     id("architectury-plugin") version("3.4-SNAPSHOT")
-    id("fabric-loom")
-    `maven-publish`
-    kotlin("jvm") version ("1.7.10")
+    kotlin("jvm") version ("1.8.10")
 }
 
-group = property("maven_group")!!
-version = property("mod_version")!!
+group = "necro.livelier.pokemon"
+version = "1.0.0"
 
 architectury {
     platformSetupLoomIde()
@@ -16,76 +14,42 @@ architectury {
 }
 
 loom {
-	accessWidenerPath.set(file("src/main/resources/livelier-pokemon.accessWidener"))
+    silentMojangMappingsLicense()
+    mixin {
+        defaultRefmapName.set("mixins.${project.name}.refmap.json")
+    }
+    accessWidenerPath.set(file("src/main/resources/livelier-pokemon.accesswidener"))
 }
 
 repositories {
     mavenCentral()
     maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
     maven("https://maven.impactdev.net/repository/development/")
-    maven {
-        url = uri("https://cursemaven.com")
-        content {
-            includeGroup("curse.maven")
-        }
-    }
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${property("minecraft_version")}")
-    mappings("net.fabricmc:yarn:${property("yarn_mappings")}")
+    minecraft("net.minecraft:minecraft:1.20.1")
+    mappings(loom.officialMojangMappings())
+    modImplementation("net.fabricmc:fabric-loader:0.14.21")
     implementation("com.google.code.gson:gson:2.8.5")
-    modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
-    modImplementation("dev.architectury", "architectury-fabric", "6.5.69")
-    modImplementation("curse.maven:cobblemon-687131:${property("cobblemon_curse_file_id")}")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.89.3+1.20.1")
+    modImplementation(fabricApi.module("fabric-command-api-v2", "0.89.3+1.20.1"))
+    modImplementation("com.cobblemon:fabric:1.4.0+1.20.1-SNAPSHOT")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 }
 
 tasks {
+    // The AW file is needed in :fabric project resources when the game is run.
+    // val copyAccessWidener by registering(Copy::class) {
+    //     destinationDir = file("build/libs")
+    //     from(loom.accessWidenerPath)
+    // }
 
-    processResources {
-        inputs.property("version", project.version)
-
-        filesMatching("fabric.mod.json") {
-            expand(mutableMapOf("version" to project.version))
-        }
-    }
-
-    jar {
-        from("LICENSE")
-    }
-
-    publishing {
-        publications {
-            create<MavenPublication>("mavenJava") {
-                artifact(remapJar) {
-                    builtBy(remapJar)
-                }
-                artifact(kotlinSourcesJar) {
-                    builtBy(remapSourcesJar)
-                }
-            }
-        }
-
-        // select the repositories you want to publish to
-        repositories {
-            // uncomment to publish to the local maven
-            // mavenLocal()
-        }
-    }
-
-    compileKotlin {
-        kotlinOptions.jvmTarget = "17"
-    }
-
-}
-
-java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
+    // processResources {
+    //     dependsOn(copyAccessWidener)
+    // }
 }

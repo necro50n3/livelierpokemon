@@ -5,12 +5,10 @@ import java.util.List;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 
 import necro.livelier.pokemon.fabric.LivelierPokemonManager;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.util.TypeFilter;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.phys.AABB;
 
 public class EntityEffectGoal extends Goal
 {
@@ -27,17 +25,17 @@ public class EntityEffectGoal extends Goal
 
     public void applyEffect(LivingEntity entity)
     {
-        StatusEffectInstance effect = null;
+        MobEffectInstance effect = null;
         effect = LivelierPokemonManager.getStatusEffect(parameter, 320, 0);
         if (effect != null)
         {
-            if (entity.canHaveStatusEffect(effect))
-                entity.addStatusEffect(effect, pokemonEntity); 
+            if (entity.canBeAffected(effect))
+                entity.addEffect(effect, pokemonEntity); 
         }
     }
 
     @Override
-    public boolean canStart()
+    public boolean canUse()
     {
         if (parameter.equals("illuminate") && pokemonEntity.getOwner() == null)
             return false;
@@ -48,7 +46,7 @@ public class EntityEffectGoal extends Goal
     @Override
     public void start()
     {
-        if(this.canStart())
+        if(this.canUse())
         {
             for (LivingEntity entity : entityList)
             {
@@ -71,8 +69,8 @@ public class EntityEffectGoal extends Goal
 
     public List<LivingEntity> getLivingEntities()
     {
-        Box box = new Box(pokemonEntity.getX()-16,pokemonEntity.getY()-16,pokemonEntity.getZ()-16,pokemonEntity.getX()+16,pokemonEntity.getY()+16,pokemonEntity.getZ()+16);
-        return pokemonEntity.world.getEntitiesByType(TypeFilter.instanceOf(LivingEntity.class), box, EntityPredicates.VALID_ENTITY);
+        AABB box = new AABB(pokemonEntity.getX()-16,pokemonEntity.getY()-16,pokemonEntity.getZ()-16,pokemonEntity.getX()+16,pokemonEntity.getY()+16,pokemonEntity.getZ()+16);
+        return this.pokemonEntity.level().getEntitiesOfClass(LivingEntity.class, box);
     }
     
 }

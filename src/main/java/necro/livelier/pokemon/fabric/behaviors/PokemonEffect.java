@@ -3,7 +3,7 @@ package necro.livelier.pokemon.fabric.behaviors;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 
 import necro.livelier.pokemon.fabric.LivelierPokemonManager;
-import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public abstract class PokemonEffect {
     public static void addEffect(PokemonEntity pokemonEntity, String parameter)
@@ -12,19 +12,20 @@ public abstract class PokemonEffect {
         {
             case "absorption":
                 pokemonEntity.setAbsorptionAmount(4);
-            break;
+                break;
             case "slowstart":
-                pokemonEntity.addStatusEffect(LivelierPokemonManager.getStatusEffect("slowness", 200, 1));
-                pokemonEntity.addStatusEffect(LivelierPokemonManager.getStatusEffect("weakness", 200, 1));
-            break;
+                pokemonEntity.addEffect(LivelierPokemonManager.getStatusEffect("slowness", 200, 1));
+                pokemonEntity.addEffect(LivelierPokemonManager.getStatusEffect("weakness", 200, 1));
+                break;
             default:
-                StatusEffectInstance effect = LivelierPokemonManager.getStatusEffect(parameter, 200, 0);
+                MobEffectInstance effect = LivelierPokemonManager.getStatusEffect(parameter, 200, 0);
                 if (effect != null)
                 {
                     if (parameter != "invisibility")
-                        effect.setPermanent(true);
-                    pokemonEntity.addStatusEffect(effect);
+                        effect.duration = -1;
+                    pokemonEntity.addEffect(effect);
                 } 
+                break;
         }
         
     }

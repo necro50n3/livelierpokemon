@@ -1,10 +1,12 @@
 package necro.livelier.pokemon.fabric.behaviors;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import net.minecraft.entity.ai.NavigationConditions;
-import net.minecraft.entity.ai.goal.AvoidSunlightGoal;
 
-public class AvoidRainGoal extends AvoidSunlightGoal {
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.util.GoalUtils;
+
+public class AvoidRainGoal extends RestrictSunGoal {
     private PokemonEntity pokemonEntity;
 
     public AvoidRainGoal(PokemonEntity pokemonEntity) {
@@ -13,13 +15,7 @@ public class AvoidRainGoal extends AvoidSunlightGoal {
     }
 
     @Override
-    public boolean canStart()
-    {
-        return (this.pokemonEntity.world.isRaining() || this.pokemonEntity.world.isThundering()) && NavigationConditions.hasMobNavigation(this.pokemonEntity);
-    }
-
-    @Override
-    public void start() {
-        super.start();
+    public boolean canUse() {
+        return (pokemonEntity.level.isRaining() || pokemonEntity.level.isThundering()) && pokemonEntity.getItemBySlot(EquipmentSlot.HEAD).isEmpty() && GoalUtils.hasGroundPathNavigation(pokemonEntity);
     }
 }

@@ -9,22 +9,22 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import necro.livelier.pokemon.fabric.behaviors.CreeperFleeCatPokemonGoal;
 
 import org.spongepowered.asm.mixin.injection.At;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 
-@Mixin(CreeperEntity.class)
-public abstract class CreeperEntityMixin extends HostileEntity
+@Mixin(Creeper.class)
+public abstract class CreeperEntityMixin extends Monster
 {
-    protected CreeperEntityMixin(EntityType<? extends HostileEntity> entityType, World world)
+    protected CreeperEntityMixin(EntityType<? extends Monster> entityType, Level world)
     {
         super(entityType, world);
     }
 
-    @Inject(method = "initGoals()V", at = @At("HEAD"))
+    @Inject(method = "registerGoals()V", at = @At("HEAD"))
     protected void initGoalsInject(CallbackInfo info)
     {
-        this.goalSelector.add(3, new CreeperFleeCatPokemonGoal<PokemonEntity>(this, PokemonEntity.class, 6.0f, 1.0, 1.2));
+        this.goalSelector.addGoal(3, new CreeperFleeCatPokemonGoal<PokemonEntity>(this, PokemonEntity.class, 6.0f, 1.0, 1.2));
     }
 }

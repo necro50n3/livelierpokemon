@@ -1,182 +1,158 @@
 package necro.livelier.pokemon.fabric.mixin;
 
-import necro.livelier.pokemon.fabric.LivelierPokemon;
 import necro.livelier.pokemon.fabric.LivelierPokemonManager;
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.Pokemon;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level.ExplosionInteraction;
+import net.minecraft.world.level.gameevent.GameEvent;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.passive.TameableShoulderEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.Explosion;
-
-@Mixin(PokemonEntity.class)
-public abstract class PokemonEntityMixin extends TameableShoulderEntity
+@Mixin(LivingEntity.class)
+public abstract class PokemonEntityMixin extends Entity
 {
-    protected PokemonEntityMixin(EntityType<PokemonEntity> entityType, World world)
+    protected PokemonEntityMixin(EntityType<? extends Entity> entityType, Level world)
     {
         super(entityType, world);
     }
 
-    @Shadow(remap = false)
-    public abstract Pokemon getPokemon();
-
-    private void addNewGoals(PokemonEntity pokemonEntity)
+    @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"))
+    public void actuallyHurtInject(DamageSource source, float amount, CallbackInfo info)
     {
-        ArrayList<String> keyList = LivelierPokemon.isNameInKey(LivelierPokemon.getAttributes(pokemonEntity.getPokemon()));
-        if (keyList.size() > 0)
+        if ((Entity)this instanceof PokemonEntity)
         {
-            for (String validKey : keyList)
+            if (this.checkAbility().equals("unaware"))
             {
-                if (LivelierPokemon.map.get(validKey).get("trigger").equals("onSend"))
-                    new LivelierPokemonManager(pokemonEntity, LivelierPokemon.map.get(validKey)).behaviourManager();
-                else if (LivelierPokemon.map.get(validKey).get("trigger").equals("onSpawn") && pokemonEntity.getOwner() == null)
-                    new LivelierPokemonManager(pokemonEntity, LivelierPokemon.map.get(validKey)).behaviourManager();
+                this.applyDamageIfUnaware(source, amount);
+                info.cancel();
             }
-        }    
-    }
-
-    @Override
-    public void applyDamage(DamageSource source, float amount)
-    {
-        if (this.checkAbility().equals("unaware"))
-        {
-            this.applyDamageIfUnaware(source, amount);
-            return;
         }
-        super.applyDamage(source, amount);
     }
 
     private void applyDamageIfUnaware(DamageSource source, float amount)
     {
+        LivingEntity entity = (LivingEntity)(Entity)this;
         if (this.isInvulnerableTo(source))
             return;
-        float health = this.getHealth();
+        float health = entity.getHealth();
         float fixedDamage = 4;
-        if (source.getSource() == null)
+        if (source.getEntity() == null)
             fixedDamage = Math.min(fixedDamage, amount);
-        this.setHealth(health - fixedDamage);
-        this.getDamageTracker().onDamage(source, health, fixedDamage);
-        this.emitGameEvent(GameEvent.ENTITY_DAMAGE);
+        entity.setHealth(health - fixedDamage);
+        entity.getCombatTracker().recordDamage(source, fixedDamage);
+        this.gameEvent(GameEvent.ENTITY_DAMAGE);
     }
 
-    @Override
-    public boolean canHaveStatusEffect(StatusEffectInstance effect)
+    @Inject(method = "canBeAffected(Lnet/minecraft/world/effect/MobEffectInstance;)Z", at = @At("HEAD"))
+    public boolean canBeAffectedInject(MobEffectInstance effect, CallbackInfoReturnable<Boolean> cir)
     {
-        if (this.checkAbility().equals("magicguard") || this.checkAbility().equals("goodasgold") || this.checkAbility().equals("fullmetalbody"))
-            return false;
-        else if (this.checkAbility().equals("immunity") && effect.getEffectType().equals(StatusEffects.POISON))
-            return false;
-        for (String type : this.checkType())
+        if ((Entity)this instanceof PokemonEntity)
         {
-            if (type.equals("poison") || type.equals("steel") && effect.getEffectType().equals(StatusEffects.POISON))
-                return false;
-            if (type.equals("electric") && effect.getEffectType().equals(StatusEffects.SLOWNESS))
-                return false;
+            if (this.checkAbility().equals("magicguard") || this.checkAbility().equals("goodasgold") || this.checkAbility().equals("fullmetalbody"))
+                cir.setReturnValue(false);
+            else if (this.checkAbility().equals("immunity") && effect.getEffect() == MobEffects.POISON)
+                cir.setReturnValue(false);
+            for (String type : this.checkType())
+            {
+                if (type.equals("poison") || type.equals("steel") && effect.getEffect() == MobEffects.POISON)
+                    cir.setReturnValue(false);
+                if (type.equals("electric") && effect.getEffect() == MobEffects.MOVEMENT_SLOWDOWN)
+                    cir.setReturnValue(false);
+            }
         }
-        return super.canHaveStatusEffect(effect);
+        return true;
     }
 
     private String checkAbility()
     {
-        return this.getPokemon().getAbility().getName();
+        PokemonEntity pokemonEntity = (PokemonEntity)(Entity)this;
+        return pokemonEntity.getPokemon().getAbility().getName();
     }
 
     private ArrayList<String> checkType()
     {
+        PokemonEntity pokemonEntity = (PokemonEntity)(Entity)this;
         ArrayList<String> types = new ArrayList<String>();
-        types.add(this.getPokemon().getPrimaryType().getName());
-        if (this.getPokemon().getSecondaryType() != null)
-            types.add(this.getPokemon().getSecondaryType().getName());
+        types.add(pokemonEntity.getPokemon().getPrimaryType().getName());
+        if (pokemonEntity.getPokemon().getSecondaryType() != null)
+            types.add(pokemonEntity.getPokemon().getSecondaryType().getName());
         return types;
     }
 
     private void createAftermath(DamageSource source)
     {
-        float x = (float) this.getX();
-        float y = (float) this.getY();
-        float z = (float) this.getZ();
-        this.world.createExplosion(this, new DamageSource("explosion"), null, x, y, z, 6, false, Explosion.DestructionType.NONE);
-    }
-
-    @Inject(method = "isInvulnerableTo(Lnet/minecraft/entity/damage/DamageSource;)Z", at = @At("HEAD"), cancellable = true)
-    public boolean isInvulnerableToInject(DamageSource source, CallbackInfoReturnable<Boolean> cir)
-    {
-        if (this.checkAbility().equals("wonderguard") && !(source.isFire() || source.equals(DamageSource.LAVA)))
-            cir.setReturnValue(true);
-        else if(this.checkAbility().equals("levitate") && source.equals(DamageSource.FALL))
-            cir.setReturnValue(true);
-        return false;
+        this.level().explode(this, this.getX(), this.getY(), this.getZ(), 3, ExplosionInteraction.NONE);
     }
 
     @Override
-    public PassiveEntity createChild(ServerWorld var1, PassiveEntity var2)
+    public boolean isInvulnerableTo(DamageSource source)
     {
-        return null;
-    }
-
-    /*
-     * Temporary Inject Code for Cobblemon Version 1.3.
-     * Remove code and replace with event listeners on update to 1.4.
-     * See @LivelierPokemon.java
-     */
-    @Inject(method = "initGoals()V", at = @At("TAIL"))
-    public void initGoalsInject(CallbackInfo info)
-    {
-        if (this.getPokemon() != null)
-            this.addNewGoals((PokemonEntity) (TameableShoulderEntity) this);
-    }
-
-    @Inject(method = "isFireImmune()Z", at = @At("HEAD"), cancellable = true)
-    public boolean isFireImmuneInject(CallbackInfoReturnable<Boolean> cir)
-    {
-        if (this.checkAbility().equals("flashfire"))
+        if ((Entity)this instanceof PokemonEntity)
         {
-            StatusEffectInstance effect = LivelierPokemonManager.getStatusEffect("strength", 200, 0);
-            if (this.canHaveStatusEffect(effect))
-                this.addStatusEffect(effect, this);
-            cir.setReturnValue(true);
+            if (this.checkAbility().equals("wonderguard") && !(source.is(DamageTypes.IN_FIRE) || source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.LAVA)))
+                return true;
+            else if(this.checkAbility().equals("levitate") && source.is(DamageTypes.FALL))
+                return true;
         }
-        return false;
+        return super.isInvulnerableTo(source);
     }
 
     @Override
-    public void onDeath(DamageSource source)
+    public boolean fireImmune()
     {
-        if (this.checkAbility().equals("aftermath") && !source.isProjectile())
-            this.createAftermath(source);
-        super.onDeath(source);
-    }
-
-    @Override
-    protected void onStatusEffectApplied(StatusEffectInstance effect, @Nullable Entity source)
-    {
-        if (source instanceof LivingEntity)
+        if ((Entity)this instanceof PokemonEntity)
         {
-            LivingEntity target = (LivingEntity) source;
-            if (this.checkAbility().equals("magicbounce") || this.checkAbility().equals("synchronize") || this.checkAbility().equals("mirrorarmor"))
+            if (this.checkAbility().equals("flashfire"))
             {
-                this.removeStatusEffect(effect.getEffectType());
-                target.addStatusEffect(effect, this);
+                LivingEntity entity = (LivingEntity)(Entity)this;
+                MobEffectInstance effect = LivelierPokemonManager.getStatusEffect("strength", 200, 0);
+                if (entity.canBeAffected(effect))
+                    entity.addEffect(effect, this);
+                return true;
             }
         }
-        super.onStatusEffectApplied(effect, source);
+        return super.fireImmune();
+    }
+
+    @Inject(method = "die(Lnet/minecraft/world/damagesource/DamageSource;)V", at = @At("HEAD"))
+    public void dieInject(DamageSource source, CallbackInfo info)
+    {
+        if ((Entity)this instanceof PokemonEntity)
+        {
+            if (this.checkAbility().equals("aftermath") && !(source.is(DamageTypes.ARROW) || source.is(DamageTypes.MOB_PROJECTILE) || source.is(DamageTypes.THROWN)))
+                this.createAftermath(source);
+        }
+    }
+
+    @Inject(method = "onEffectAdded(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"))
+    public void onEffectAddedInject(MobEffectInstance effect, @Nullable Entity source, CallbackInfo info)
+    {
+        if ((Entity)this instanceof PokemonEntity)
+        {
+            if (source instanceof LivingEntity)
+            {
+                LivingEntity target = (LivingEntity) source;
+                if (this.checkAbility().equals("magicbounce") || this.checkAbility().equals("synchronize") || this.checkAbility().equals("mirrorarmor"))
+                {
+                    LivingEntity entity = (LivingEntity)(Entity)this;
+                    entity.removeEffect(effect.getEffect());
+                    target.addEffect(effect, this);
+                }
+            }
+        }
     }
 }

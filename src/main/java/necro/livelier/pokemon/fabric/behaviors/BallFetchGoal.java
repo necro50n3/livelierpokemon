@@ -2,21 +2,19 @@ package necro.livelier.pokemon.fabric.behaviors;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.entity.pokeball.EmptyPokeBallEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.text.Text;
-import net.minecraft.util.TypeFilter;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.EntityGetter;
 import java.util.List;
 
 public class BallFetchGoal extends Goal{
     private PokemonEntity pokemonEntity;
-    private PlayerEntity owner;
+    private Player owner;
     private ItemStack item;
-    private World world;
+    private EntityGetter world;
     private EmptyPokeBallEntity pokeballEntityInstance;
     private boolean pokeballHit;
     private boolean pokemonCaught;
@@ -24,18 +22,18 @@ public class BallFetchGoal extends Goal{
     public BallFetchGoal(PokemonEntity pokemonEntity, String parameter)
     {
         this.pokemonEntity = pokemonEntity;
-        this.world = pokemonEntity.getWorld();
+        this.world = pokemonEntity.level();
         pokeballHit = false;
         pokemonCaught = false;
     }
     
 
     @Override
-    public boolean canStart()
+    public boolean canUse()
     {
         if (owner == null)
         {
-            owner = (PlayerEntity) pokemonEntity.getOwner();
+            owner = (Player) pokemonEntity.getOwner();
             return false;
         }
         pokeballEntityInstance = this.getThrownPokeBall();
@@ -59,20 +57,20 @@ public class BallFetchGoal extends Goal{
     @Override
     public void start()
     {
-        if (this.canStart())
+        if (this.canUse())
         {
             pokemonEntity.getPokemon().swapHeldItem(item, false);
             pokeballHit = false;
             pokemonCaught = false;
             item = null;
-            owner.sendMessage(Text.of(pokemonEntity.getDisplayName().getString() + " has retrieved your Poké Ball!"));
+            owner.sendSystemMessage(Component.literal(pokemonEntity.getDisplayName().getString() + " has retrieved your Poké Ball!"));
         }
     }
 
     public EmptyPokeBallEntity getThrownPokeBall()
     {
-        Box box = new Box(pokemonEntity.getX()-10,pokemonEntity.getY()-10,pokemonEntity.getZ()-10,pokemonEntity.getX()+10,pokemonEntity.getY()+10,pokemonEntity.getZ()+10);
-        List<EmptyPokeBallEntity> pokeBallList = world.getEntitiesByType(TypeFilter.instanceOf(EmptyPokeBallEntity.class), box, EntityPredicates.VALID_ENTITY);
+        AABB box = new AABB(pokemonEntity.getX()-10,pokemonEntity.getY()-10,pokemonEntity.getZ()-10,pokemonEntity.getX()+10,pokemonEntity.getY()+10,pokemonEntity.getZ()+10);
+        List<EmptyPokeBallEntity> pokeBallList = world.getEntitiesOfClass(EmptyPokeBallEntity.class, box);
         for (EmptyPokeBallEntity pokeballEntityInstance : pokeBallList)
         {
             if (pokeballEntityInstance.getOwner().equals(owner))

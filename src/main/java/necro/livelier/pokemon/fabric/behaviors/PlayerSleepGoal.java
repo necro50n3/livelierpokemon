@@ -4,18 +4,15 @@ import java.util.List;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.text.Text;
-import net.minecraft.util.TypeFilter;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 public class PlayerSleepGoal extends Goal{
     private PokemonEntity pokemonEntity;
-    private List<PlayerEntity> playerList;
-    private PlayerEntity player;
+    private List<Player> playerList;
+    private Player player;
 
     public PlayerSleepGoal(PokemonEntity pokemonEntity, String parameter)
     {
@@ -23,11 +20,11 @@ public class PlayerSleepGoal extends Goal{
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         playerList = this.getLivingEntities();
         if (playerList.size() > 0)
         {
-            for (PlayerEntity playerInstance : playerList)
+            for (Player playerInstance : playerList)
             {
                 if (playerInstance.getSleepTimer() > 80)
                 {
@@ -42,24 +39,24 @@ public class PlayerSleepGoal extends Goal{
 
     @Override
     public void start() {
-        if(this.canStart())
+        if(this.canUse())
         {
             this.triggerWakeUp();
             player = null;
         }
     }
 
-    public List<PlayerEntity> getLivingEntities()
+    public List<Player> getLivingEntities()
     {
-        Box box = new Box(pokemonEntity.getX()-16,pokemonEntity.getY()-16,pokemonEntity.getZ()-16,pokemonEntity.getX()+16,pokemonEntity.getY()+16,pokemonEntity.getZ()+16);
-        return pokemonEntity.world.getEntitiesByType(TypeFilter.instanceOf(PlayerEntity.class), box, EntityPredicates.VALID_ENTITY);
+        AABB box = new AABB(pokemonEntity.getX()-16,pokemonEntity.getY()-16,pokemonEntity.getZ()-16,pokemonEntity.getX()+16,pokemonEntity.getY()+16,pokemonEntity.getZ()+16);
+        return pokemonEntity.level().getEntitiesOfClass(Player.class, box);
     }
 
     public void triggerWakeUp()
     {
-        player.damage(DamageSource.mob(pokemonEntity).setBypassesArmor(), 6);
-        player.wakeUp();
-        player.sendMessage(Text.of("You wake up from a terrifying nightmare."));
+        player.hurt(pokemonEntity.damageSources().magic(), 6);
+        player.stopSleeping();
+        player.sendSystemMessage(Component.literal("You wake up from a terrifying nightmare."));
     }
     
 }
