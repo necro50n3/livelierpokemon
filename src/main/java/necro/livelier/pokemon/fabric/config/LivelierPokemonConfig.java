@@ -147,6 +147,14 @@ public abstract class LivelierPokemonConfig {
                                                                 put("parameter", "slowstart");}});
             put("Abra", new HashMap<String, String>(){{         put("trigger", "onSpawn");
                                                                 put("type", "wander");}});
+            put("Voltorb", new HashMap<String, String>(){{  put("trigger", "onSpawn");
+                                                                put("type", "goal");
+                                                                put("class", "VoltorbExplosionGoal");
+                                                                put("parameter", "");}});
+            put("Electrode", new HashMap<String, String>(){{    put("trigger", "onSpawn");
+                                                                put("type", "goal");
+                                                                put("class", "VoltorbExplosionGoal");
+                                                                put("parameter", "");}});
         }};
         return newMap;
     }

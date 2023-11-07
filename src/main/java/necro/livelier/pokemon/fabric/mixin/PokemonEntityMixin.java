@@ -57,7 +57,7 @@ public abstract class PokemonEntityMixin extends Entity
         this.gameEvent(GameEvent.ENTITY_DAMAGE);
     }
 
-    @Inject(method = "canBeAffected(Lnet/minecraft/world/effect/MobEffectInstance;)Z", at = @At("HEAD"))
+    @Inject(method = "canBeAffected(Lnet/minecraft/world/effect/MobEffectInstance;)Z", at = @At("HEAD"), cancellable = true)
     public boolean canBeAffectedInject(MobEffectInstance effect, CallbackInfoReturnable<Boolean> cir)
     {
         if ((Entity)this instanceof PokemonEntity)
