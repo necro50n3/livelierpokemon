@@ -58,6 +58,7 @@ Unique effects that are uncategorised.
 - Unaware: The Pokemon will take fixed damage from an attacker no matter their weapon
 - Lightning Rod: If lightning strikes nearby it will be redirected to the Pokemon and have no effect
 - Abra: Will randomly teleport around
+- Voltorb/Electrode: Will target nearby players and explode when nearby. Does not trigger on shinies
 
 
 ## Other
