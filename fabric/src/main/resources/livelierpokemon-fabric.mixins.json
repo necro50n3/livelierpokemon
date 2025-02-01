@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "necro.livelier.pokemon.fabric.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "PlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "necro.livelier.pokemon.common.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CreeperMixin",
+    "GolurkMixin",
+    "LightningRodMixin",
+    "LivingEntityMixin",
+    "PastureBlockMixin",
+    "PoisonEffectMixin",
+    "PokemonEntityMixin",
+    "ProjectileMixin",
+    "SkeletonMixin",
+    "TamableAnimalMixin",
+    "VillagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

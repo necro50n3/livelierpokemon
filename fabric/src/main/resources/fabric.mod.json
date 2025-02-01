@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "livelierpokemon",
+  "version": "${version}",
+  "name": "LivelierPokemon",
+  "description": "Integrates Pokemon and Pokemon abilities into Minecraft!",
+  "authors": [
+    "NecroSo1"
+  ],
+  "license": "MIT License",
+  "icon": "assets/livelierpokemon/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "necro.livelier.pokemon.fabric.LivelierPokemonFabric"
+    ],
+    "client": [
+      "necro.livelier.pokemon.fabric.LivelierPokemonFabricClient"
+    ]
+  },
+  "mixins": [
+    "livelierpokemon-common.mixins.json",
+    "livelierpokemon-fabric.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "1.21.1",
+    "cobblemon": ">=1.6.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "ability.livelierpokemon.baddreams": "You wake up from a terrifying nightmare...",
+  "ability.livelierpokemon.ballfetch": "%s has retrieved your %s!",
+  "death.attack.bad_dreams": "%1$s was tormented by nightmares.",
+  "effect.livelierpokemon.paralysis": "Paralysis",
+  "effect.livelierpokemon.electric_terrain_effect": "Electric Terrain",
+  "effect.livelierpokemon.grassy_terrain_effect": "Grassy Terrain",
+  "effect.livelierpokemon.misty_terrain_effect": "Misty Terrain",
+  "effect.livelierpokemon.psychic_terrain_effect": "Psychic Terrain"
+}

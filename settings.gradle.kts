@@ -1,4 +1,4 @@
-rootProject.name = "LivelierPokemon"
+rootProject.name = "livelierpokemon"
 
 pluginManagement {
     repositories {
@@ -8,3 +8,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+listOf(
+    "common",
+    "neoforge",
+    "fabric"
+).forEach { include(it)}

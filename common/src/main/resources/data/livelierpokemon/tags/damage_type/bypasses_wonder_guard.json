@@ -1,0 +1,16 @@
+{
+  "values": [
+    "minecraft:falling_stalactite",
+    "minecraft:fireball",
+    "minecraft:hot_floor",
+    "minecraft:in_fire",
+    "minecraft:lava",
+    "minecraft:on_fire",
+    "minecraft:out_of_world",
+    "minecraft:outside_border",
+    "minecraft:stalagmite",
+    "minecraft:unattributed_fireball",
+    "minecraft:wither",
+    "minecraft:wither_skull"
+  ]
+}
