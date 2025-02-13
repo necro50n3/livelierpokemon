@@ -36,25 +36,29 @@ public class ParticleHelper {
 
     private static void summonElectricTerrain(PokemonEntity source, int radius) {
         AreaEffectCloud areaEffectCloud = summonTerrain(source, radius, ParticleRegistry.ELECTRIC_TERRAIN);
-        areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.ELECTRIC_TERRAIN, 60, 0, false, false, false));
+        if (EffectRegistry.ELECTRIC_TERRAIN != null)
+            areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.ELECTRIC_TERRAIN, 60, 0, false, false, false));
         source.level().addFreshEntity(areaEffectCloud);
     }
 
     private static void summonGrassyTerrain(PokemonEntity source, int radius) {
         AreaEffectCloud areaEffectCloud = summonTerrain(source, radius, ParticleRegistry.GRASSY_TERRAIN);
-        areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.GRASSY_TERRAIN, 60, 0, false, false, false));
+        if (EffectRegistry.GRASSY_TERRAIN != null)
+            areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.GRASSY_TERRAIN, 60, 0, false, false, false));
         source.level().addFreshEntity(areaEffectCloud);
     }
 
     private static void summonMistyTerrain(PokemonEntity source, int radius) {
         AreaEffectCloud areaEffectCloud = summonTerrain(source, radius, ParticleRegistry.MISTY_TERRAIN);
-        areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.MISTY_TERRAIN, 60, 0, false, false, false));
+        if (EffectRegistry.MISTY_TERRAIN != null)
+            areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.MISTY_TERRAIN, 60, 0, false, false, false));
         source.level().addFreshEntity(areaEffectCloud);
     }
 
     private static void summonPsychicTerrain(PokemonEntity source, int radius) {
         AreaEffectCloud areaEffectCloud = summonTerrain(source, radius, ParticleRegistry.PSYCHIC_TERRAIN);
-        areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.PSYCHIC_TERRAIN, 60, 0, false, false, false));
+        if (EffectRegistry.PSYCHIC_TERRAIN != null)
+            areaEffectCloud.addEffect(new MobEffectInstance(EffectRegistry.PSYCHIC_TERRAIN, 60, 0, false, false, false));
         source.level().addFreshEntity(areaEffectCloud);
     }
 }

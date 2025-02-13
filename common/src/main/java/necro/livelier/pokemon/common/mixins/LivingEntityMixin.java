@@ -47,15 +47,6 @@ public abstract class LivingEntityMixin extends Entity {
         return this.getDamageAfterMagicAbsorb(damageSource, damage);
     }
 
-    @Inject(method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z", at = @At("RETURN"))
-    private void hurtInject(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
-        if (LivelierPokemon.getAbilityConfig().INNARDS_OUT && (LivingEntity) (Object) this instanceof PokemonEntity pokemonEntity)
-            if (SpawnHelper.hasAbility(pokemonEntity, "innardsout") && this.isDeadOrDying() &&
-                damageSource.getEntity() instanceof LivingEntity livingEntity) {
-            livingEntity.hurt(this.damageSources().mobAttack((LivingEntity) (Object) this), damage);
-        }
-    }
-
     @Inject(method = "canBeAffected(Lnet/minecraft/world/effect/MobEffectInstance;)Z", at = @At("HEAD"), cancellable = true)
     private void canBeAffectedInject(MobEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
         AbilityConfig config = LivelierPokemon.getAbilityConfig();

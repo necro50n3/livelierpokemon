@@ -2,6 +2,7 @@ package necro.livelier.pokemon.common;
 
 import com.mojang.logging.LogUtils;
 import necro.livelier.pokemon.common.config.AbilityConfig;
+import necro.livelier.pokemon.common.config.CategoryCache;
 import necro.livelier.pokemon.common.config.CategoryConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -24,11 +25,13 @@ public class LivelierPokemon {
     }
 
     public static void init() {
+        LOGGER.info("Initiating {}", MODID);
+
         AutoConfig.register(AbilityConfig.class, JanksonConfigSerializer::new);
         AutoConfig.register(CategoryConfig.class, JanksonConfigSerializer::new);
         abilityConfig = AutoConfig.getConfigHolder(AbilityConfig.class).getConfig();
         categoryConfig = AutoConfig.getConfigHolder(CategoryConfig.class).getConfig();
-        categoryConfig.init();
+        CategoryCache.init();
 
         SpawnHelper.init();
     }

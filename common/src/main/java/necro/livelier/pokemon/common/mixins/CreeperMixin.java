@@ -2,6 +2,7 @@ package necro.livelier.pokemon.common.mixins;
 
 import necro.livelier.pokemon.common.LivelierPokemon;
 import necro.livelier.pokemon.common.config.AbilityConfig;
+import necro.livelier.pokemon.common.config.CategoryCache;
 import necro.livelier.pokemon.common.goals.AvoidPokemonGoal;
 import necro.livelier.pokemon.common.helpers.SpawnHelper;
 import necro.livelier.pokemon.common.helpers.TargetHelper;
@@ -14,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Creeper.class)
 public abstract class CreeperMixin extends Monster {
@@ -29,7 +29,7 @@ public abstract class CreeperMixin extends Monster {
     {
         if (!LivelierPokemon.getAbilityConfig().CREEPER_FLEE_CAT) return;
         this.goalSelector.addGoal(3, new AvoidPokemonGoal(this, 6.0f, 1.0, 1.2, (pokemonEntity) ->
-            LivelierPokemon.getCategoryConfig().getCats().contains(pokemonEntity.getPokemon().getSpecies().getName())));
+            CategoryCache.getCats().contains(pokemonEntity.getPokemon().getSpecies().getName())));
     }
 
     @Inject(method = "setSwellDir(I)V", at = @At("HEAD"), cancellable = true)

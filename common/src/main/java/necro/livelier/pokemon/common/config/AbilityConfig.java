@@ -7,6 +7,10 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 @Config(name="livelierpokemon-abilities")
 public class AbilityConfig implements ConfigData {
+    @ConfigEntry.Category("Server Compatibility")
+    @Comment("Toggles server-only mode which disables certain features so players don't need to download this mod.")
+    public boolean SERVER_MODE = false;
+
     @ConfigEntry.Category("Abilities")
     @Comment("Explodes on death. Does not affect the world.")
     public boolean AFTERMATH = true;

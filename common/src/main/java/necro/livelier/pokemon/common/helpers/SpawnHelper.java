@@ -26,8 +26,10 @@ import java.util.function.Consumer;
 public class SpawnHelper {
     private static final Map<String, Consumer<PokemonEntity>> ON_SEND = new HashMap<>();
     private static final Map<String, Consumer<PokemonEntity>> ON_SPAWN = new HashMap<>();
-    private static final TriConsumer<PokemonEntity, Integer, Goal> goalHelper = (pokemonEntity, priority, goal) ->
+    private static final TriConsumer<PokemonEntity, Integer, Goal> goalHelper = (pokemonEntity, priority, goal) -> {
+        if (pokemonEntity == null) return;
         pokemonEntity.goalSelector.addGoal(priority, goal);
+    };
 
     public static void init() {
         registerEvents();
@@ -43,6 +45,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.DIG_SLOWDOWN, config.cursed_body_duration, config.cursed_body_trigger_chance)
             );
+            ON_SEND.putIfAbsent("cursedbody", cons);
             ON_SPAWN.putIfAbsent("cursedbody", cons);
         }
         if (config.DARK_AURA) {
@@ -63,12 +66,14 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> pokemonEntity.addEffect(
                 new MobEffectInstance(MobEffects.ABSORPTION, -1, 0)
             );
+            ON_SEND.putIfAbsent("disguise", cons);
             ON_SPAWN.putIfAbsent("disguise", cons);
         }
         if (config.EFFECT_SPORE) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.POISON, config.effect_spore_duration, config.effect_spore_trigger_chance)
             );
+            ON_SEND.putIfAbsent("effectspore", cons);
             ON_SPAWN.putIfAbsent("effectspore", cons);
         }
         if (config.ELECTRIC_SURGE) {
@@ -91,6 +96,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new FlameBodyGoal(pokemonEntity, (float) config.flame_body_trigger_chance, config.flame_body_duration)
             );
+            ON_SEND.putIfAbsent("flamebody", cons);
             ON_SPAWN.putIfAbsent("flamebody", cons);
         }
         if (config.FRIEND_GUARD) {
@@ -103,6 +109,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.MOVEMENT_SLOWDOWN, config.gooey_duration, config.gooey_trigger_chance)
             );
+            ON_SEND.putIfAbsent("gooey", cons);
             ON_SPAWN.putIfAbsent("gooey", cons);
         }
         if (config.GRASSY_SURGE) {
@@ -134,6 +141,7 @@ public class SpawnHelper {
                 new SelfEffectGoal(pokemonEntity, MobEffects.FIRE_RESISTANCE, 240, 0)
             );
             ON_SEND.putIfAbsent("heatproof", cons);
+            ON_SPAWN.putIfAbsent("heatproof", cons);
         }
         if (config.HUGE_POWER) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
@@ -146,6 +154,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> pokemonEntity.addEffect(
                 new MobEffectInstance(MobEffects.ABSORPTION, -1, 0)
             );
+            ON_SEND.putIfAbsent("iceface", cons);
             ON_SPAWN.putIfAbsent("iceface", cons);
         }
         if (config.ILLUMINATE) {
@@ -165,6 +174,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new DamageRevengeGoal(pokemonEntity, config.iron_barbs_damage)
             );
+            ON_SEND.putIfAbsent("ironbarbs", cons);
             ON_SPAWN.putIfAbsent("ironbarbs", cons);
         }
         if (config.MAGNET_PULL) {
@@ -192,12 +202,14 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.WITHER, config.perish_body_duration, config.perish_body_trigger_chance)
             );
+            ON_SEND.putIfAbsent("perishbody", cons);
             ON_SPAWN.putIfAbsent("perishbody", cons);
         }
         if (config.POISON_POINT) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.POISON, config.poison_point_duration, config.poison_point_trigger_chance)
             );
+            ON_SEND.putIfAbsent("poisonpoint", cons);
             ON_SPAWN.putIfAbsent("poisonpoint", cons);
         }
         if (config.POWER_SPOT) {
@@ -210,6 +222,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new PressureGoal(pokemonEntity, config.pressure_durability_loss)
             );
+            ON_SEND.putIfAbsent("pressure", cons);
             ON_SPAWN.putIfAbsent("pressure", cons);
         }
         if (config.PSYCHIC_SURGE) {
@@ -233,12 +246,14 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new DamageRevengeGoal(pokemonEntity, config.rough_skin_damage)
             );
+            ON_SEND.putIfAbsent("roughskin", cons);
             ON_SPAWN.putIfAbsent("roughskin", cons);
         }
         if (config.SAND_SPIT) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.BLINDNESS, config.sand_spit_duration, config.sand_spit_trigger_chance)
             );
+            ON_SEND.putIfAbsent("sandspit", cons);
             ON_SPAWN.putIfAbsent("sandspit", cons);
         }
         if (config.SEED_SOWER) {
@@ -252,6 +267,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, EffectRegistry.PARALYSIS, config.static_duration, config.static_trigger_chance)
             );
+            ON_SEND.putIfAbsent("static", cons);
             ON_SPAWN.putIfAbsent("static", cons);
         }
         if (config.SLOW_START) {
@@ -259,6 +275,7 @@ public class SpawnHelper {
                 pokemonEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, config.slow_start_duration, 1));
                 pokemonEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, config.slow_start_duration, 1));
             };
+            ON_SEND.putIfAbsent("slowstart", cons);
             ON_SPAWN.putIfAbsent("slowstart", cons);
         }
         if (config.SPEED_BOOST) {
@@ -303,12 +320,14 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.MOVEMENT_SLOWDOWN, config.tangling_hair_duration, config.tangling_hair_trigger_chance)
             );
+            ON_SEND.putIfAbsent("tanglinghair", cons);
             ON_SPAWN.putIfAbsent("tanglinghair", cons);
         }
         if (config.TOXIC_DEBRIS) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new EffectRevengeGoal(pokemonEntity, MobEffects.POISON, config.toxic_debris_duration, config.toxic_debris_trigger_chance)
             );
+            ON_SEND.putIfAbsent("toxicdebris", cons);
             ON_SPAWN.putIfAbsent("toxicdebris", cons);
         }
         if (config.VESSEL_OF_RUIN) {
@@ -331,6 +350,7 @@ public class SpawnHelper {
                 attribute.setBaseValue(1f);
                 pokemonEntity.setHealth(1f);
             };
+            ON_SEND.putIfAbsent("wonderguard", cons);
             ON_SPAWN.putIfAbsent("wonderguard", cons);
         }
 
@@ -344,6 +364,7 @@ public class SpawnHelper {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new KecleonGoal(pokemonEntity, config.kecleon_duration)
             );
+            ON_SEND.putIfAbsent("Kecleon", cons);
             ON_SPAWN.putIfAbsent("Kecleon", cons);
         }
         if (config.VOLTORB) {

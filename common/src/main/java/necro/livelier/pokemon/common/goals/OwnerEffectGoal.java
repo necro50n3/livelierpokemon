@@ -21,6 +21,12 @@ public class OwnerEffectGoal extends EntityEffectGoal {
     }
 
     @Override
+    public boolean canUse() {
+        if (this.owner == null) return false;
+        return this.pokemonEntity.distanceTo(this.owner) < 16;
+    }
+
+    @Override
     public List<LivingEntity> getEntities() {
         return Collections.singletonList(this.owner);
     }

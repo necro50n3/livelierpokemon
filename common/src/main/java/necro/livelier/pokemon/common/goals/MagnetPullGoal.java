@@ -9,11 +9,13 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 
 public class MagnetPullGoal extends Goal {
+    private final PokemonEntity pokemonEntity;
     private final LivingEntity owner;
     private final int range;
     private int tick;
 
     public MagnetPullGoal(PokemonEntity pokemonEntity, int range) {
+        this.pokemonEntity = pokemonEntity;
         this.owner = pokemonEntity.getOwner();
         this.range = range;
         this.tick = 0;
@@ -21,7 +23,8 @@ public class MagnetPullGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return true;
+        if (this.owner == null) return false;
+        return this.pokemonEntity.distanceTo(this.owner) < 16;
     }
 
     @Override

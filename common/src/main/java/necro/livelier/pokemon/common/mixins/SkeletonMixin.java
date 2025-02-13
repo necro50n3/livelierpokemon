@@ -1,6 +1,7 @@
 package necro.livelier.pokemon.common.mixins;
 
 import necro.livelier.pokemon.common.LivelierPokemon;
+import necro.livelier.pokemon.common.config.CategoryCache;
 import necro.livelier.pokemon.common.goals.AvoidPokemonGoal;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
@@ -22,6 +23,6 @@ public abstract class SkeletonMixin extends Monster {
     {
         if (!LivelierPokemon.getAbilityConfig().SKELETON_FLEE_DOG) return;
         this.goalSelector.addGoal(3, new AvoidPokemonGoal(this, 6.0f, 1.0, 1.2, (pokemonEntity) ->
-            LivelierPokemon.getCategoryConfig().getDogs().contains(pokemonEntity.getPokemon().getSpecies().getName())));
+            CategoryCache.getDogs().contains(pokemonEntity.getPokemon().getSpecies().getName())));
     }
 }

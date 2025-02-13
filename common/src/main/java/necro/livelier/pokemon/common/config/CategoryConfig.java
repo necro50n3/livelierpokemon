@@ -3,15 +3,11 @@ package necro.livelier.pokemon.common.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Config(name="livelierpokemon-categories")
 public class CategoryConfig implements ConfigData {
     @ConfigEntry.Category("Cat Pokemon")
-    public List<String> CAT_POKEMON = Arrays.asList(
+    public String[] CAT_POKEMON = {
         "Meowth",
         "Persian",
         "Espeon",
@@ -39,9 +35,9 @@ public class CategoryConfig implements ConfigData {
         "Floragato",
         "Meowscarada",
         "Chien-Pao"
-    );
+    };
     @ConfigEntry.Category("Dog Pokemon")
-    public List<String> DOG_POKEMON = Arrays.asList(
+    public String[] DOG_POKEMON = {
         "Growlithe",
         "Arcanine",
         "Snubbull",
@@ -73,21 +69,5 @@ public class CategoryConfig implements ConfigData {
         "Greavard",
         "Houndstone",
         "Okidogi"
-    );
-
-    private Set<String> CAT_SET;
-    private Set<String> DOG_SET;
-
-    public void init() {
-        CAT_SET = new HashSet<>(this.CAT_POKEMON);
-        DOG_SET = new HashSet<>(this.DOG_POKEMON);
-    }
-
-    public Set<String> getCats() {
-        return this.CAT_SET;
-    }
-
-    public Set<String> getDogs() {
-        return this.DOG_SET;
-    }
+    };
 }

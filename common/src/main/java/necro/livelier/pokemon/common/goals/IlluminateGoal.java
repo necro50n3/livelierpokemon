@@ -2,6 +2,9 @@ package necro.livelier.pokemon.common.goals;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import necro.livelier.pokemon.common.helpers.TargetHelper;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -18,5 +21,9 @@ public class IlluminateGoal extends EntityEffectGoal {
     @Override
     public List<LivingEntity> getEntities() {
         return TargetHelper.getNearbyEntities(this.pokemonEntity, this.radius, false, (entity) -> !entity.is(this.pokemonEntity.getOwner()));
+    }
+
+    public MobEffectInstance getEffect(Holder<MobEffect> mobEffect, int duration, int amplifier) {
+        return new MobEffectInstance(mobEffect, duration, amplifier, false, false, false);
     }
 }

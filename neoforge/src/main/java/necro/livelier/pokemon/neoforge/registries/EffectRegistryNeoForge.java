@@ -8,7 +8,8 @@ import net.minecraft.world.effect.MobEffect;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class EffectRegistryNeoForge extends EffectRegistry {
-    public static DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, LivelierPokemon.MODID);
+    public static DeferredRegister<MobEffect> MOB_EFFECTS = LivelierPokemon.getAbilityConfig().SERVER_MODE ?
+        null : DeferredRegister.create(Registries.MOB_EFFECT, LivelierPokemon.MODID);
 
     public static void register() {
         EffectRegistry.PARALYSIS = MOB_EFFECTS.register("paralysis", ParalysisEffect::new);

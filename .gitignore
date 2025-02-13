@@ -1,11 +1,8 @@
 # gradle
 
 .gradle/
-.architectury-transformer/
-.idea/
 build/
 out/
-run/
 classes/
 
 # eclipse
