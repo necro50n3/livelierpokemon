@@ -27,7 +27,6 @@ public class SpawnHelper {
     private static final Map<String, Consumer<PokemonEntity>> ON_SEND = new HashMap<>();
     private static final Map<String, Consumer<PokemonEntity>> ON_SPAWN = new HashMap<>();
     private static final TriConsumer<PokemonEntity, Integer, Goal> goalHelper = (pokemonEntity, priority, goal) -> {
-        if (pokemonEntity == null) return;
         pokemonEntity.goalSelector.addGoal(priority, goal);
     };
 
@@ -391,20 +390,26 @@ public class SpawnHelper {
 
     private static void registerEvents() {
         CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, event -> {
-            onSend(event.getPokemon());
+            try { onSend(event.getPokemon()); }
+            catch (NullPointerException ignored) {}
             return Unit.INSTANCE;
         });
         CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, event -> {
-            onSpawn(event.getEntity());
+            try { onSpawn(event.getEntity()); }
+            catch (NullPointerException ignored) {}
             return Unit.INSTANCE;
         });
         CobblemonEvents.POKEMON_ENTITY_LOAD.subscribe(Priority.NORMAL, event -> {
-            if (event.getPokemonEntity().getPokemon().getOwnerEntity() == null) onSpawn(event.getPokemonEntity());
-            else onSend(event.getPokemonEntity());
+            try {
+                if (event.getPokemonEntity().getPokemon().getOwnerEntity() == null) onSpawn(event.getPokemonEntity());
+                else onSend(event.getPokemonEntity());
+            }
+            catch (NullPointerException ignored) {}
             return Unit.INSTANCE;
         });
         EventRegistry.PASTURE_SENT.subscribe(Priority.NORMAL, event -> {
-            onSend(event.pokemon);
+            try { onSend(event.pokemon); }
+            catch (NullPointerException ignored) {}
             return Unit.INSTANCE;
         });
 
