@@ -1,5 +1,6 @@
 package necro.livelier.pokemon.common.mixins;
 
+import com.cobblemon.mod.common.entity.pokeball.EmptyPokeBallEntity;
 import necro.livelier.pokemon.common.util.IFreeze;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -40,6 +41,7 @@ public abstract class ProjectileMixin extends Entity implements IFreeze {
 
     @Override
     public void livelierpokemon$SetTicksFrozen(int ticks) {
+        if ((Entity) this instanceof EmptyPokeBallEntity) return;
         this.livelierpokemon$ticksFrozen = ticks;
     }
 }
