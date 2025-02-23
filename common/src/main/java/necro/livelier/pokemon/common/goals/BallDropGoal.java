@@ -34,10 +34,4 @@ public class BallDropGoal extends FollowOwnerGoal {
 
         return false;
     }
-
-    @Override
-    public void stop() {
-        super.stop();
-        this.pokemonEntity.goalSelector.removeGoal(this);
-    }
 }

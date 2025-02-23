@@ -51,7 +51,6 @@ public class BallFetchGoal extends Goal {
     public void stop() {
         this.pokeBallEntity = null;
         this.pokemonEntity.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
-        this.pokemonEntity.goalSelector.removeGoal(this);
     }
 
     @Override
