@@ -34,4 +34,9 @@ public class BallDropGoal extends FollowOwnerGoal {
 
         return false;
     }
+
+    @Override
+    public boolean isInterruptable() {
+        return false;
+    }
 }

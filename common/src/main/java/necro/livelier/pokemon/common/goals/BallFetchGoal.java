@@ -8,7 +8,7 @@ import net.minecraft.world.level.pathfinder.PathType;
 
 public class BallFetchGoal extends Goal {
     private final PokemonEntity pokemonEntity;
-    private EmptyPokeBallEntity pokeBallEntity;
+    public EmptyPokeBallEntity pokeBallEntity;
     private final int delay;
     private int tick;
     private int recalcPath;
@@ -61,5 +61,10 @@ public class BallFetchGoal extends Goal {
             this.recalcPath = this.adjustedTickDelay(10);
             this.pokemonEntity.getNavigation().moveTo(this.pokeBallEntity, 1.3);
         }
+    }
+
+    @Override
+    public boolean isInterruptable() {
+        return false;
     }
 }
