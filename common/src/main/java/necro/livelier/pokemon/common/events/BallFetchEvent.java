@@ -7,6 +7,7 @@ import necro.livelier.pokemon.common.goals.BallFetchGoal;
 import necro.livelier.pokemon.common.helpers.SpawnHelper;
 import necro.livelier.pokemon.common.helpers.TargetHelper;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public class BallFetchEvent {
         );
         if (fetcher == null) return;
         else if (!fetcher.getPokemon().heldItem().isEmpty()) return;
+        else if (!(fetcher.getOwner() instanceof Player)) return;
         Optional<WrappedGoal> goal = fetcher.goalSelector.getAvailableGoals().stream().filter(wrappedGoal -> wrappedGoal.getGoal() instanceof BallFetchGoal).findFirst();
         if (goal.isPresent() && ((BallFetchGoal) goal.get().getGoal()).pokeBallEntity != null) return;
         fetcher.goalSelector.addGoal(3, new BallFetchGoal(fetcher, event.getPokeBallEntity(), event.getCaptureResult().getNumberOfShakes()));

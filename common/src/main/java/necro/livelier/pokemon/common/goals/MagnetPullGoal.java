@@ -24,6 +24,7 @@ public class MagnetPullGoal extends Goal {
     @Override
     public boolean canUse() {
         if (this.owner == null) return false;
+        else if (!(this.owner instanceof Player)) return false;
         return this.pokemonEntity.distanceTo(this.owner) < 16;
     }
 

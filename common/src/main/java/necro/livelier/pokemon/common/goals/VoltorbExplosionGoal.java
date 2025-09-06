@@ -60,9 +60,9 @@ public class VoltorbExplosionGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.pokemonEntity.getPokemon().getShiny()) return false;
-        else if (this.pokemonEntity.getOwner() != null) return false;
-        else return this.pokemonEntity.isAlive();
+        if (this.pokemonEntity.getOwner() != null) return false;
+        else if (!this.pokemonEntity.isAlive()) return false;
+        else return this.canUse();
     }
 
     @Override
