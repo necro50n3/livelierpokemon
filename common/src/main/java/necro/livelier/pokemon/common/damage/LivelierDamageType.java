@@ -16,6 +16,7 @@ public class LivelierDamageType {
     public static final TagKey<DamageType> BYPASSES_WONDER_GUARD = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(LivelierPokemon.MODID, "bypasses_wonder_guard"));
 
     public static final ResourceKey<DamageType> BAD_DREAMS = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(LivelierPokemon.MODID, "bad_dreams"));
+    public static final ResourceKey<DamageType> SANDSTORM = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(LivelierPokemon.MODID, "sandstorm"));
 
     public static DamageSource getDamageSource(ResourceKey<DamageType> damageType, Level level, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
         return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageType), directEntity, causingEntity);

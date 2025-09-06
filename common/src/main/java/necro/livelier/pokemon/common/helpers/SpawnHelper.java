@@ -1,5 +1,6 @@
 package necro.livelier.pokemon.common.helpers;
 
+import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.types.ElementalType;
@@ -13,6 +14,9 @@ import necro.livelier.pokemon.common.goals.*;
 import necro.livelier.pokemon.common.registries.EffectRegistry;
 import necro.livelier.pokemon.common.registries.EventRegistry;
 import necro.livelier.pokemon.common.registries.ParticleRegistry;
+import necro.livelier.pokemon.common.weather.Weather;
+import necro.livelier.pokemon.common.weather.WeatherManager;
+import necro.livelier.pokemon.common.weather.weathers.*;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -26,19 +30,28 @@ import java.util.function.Consumer;
 public class SpawnHelper {
     private static final Map<String, Consumer<PokemonEntity>> ON_SEND = new HashMap<>();
     private static final Map<String, Consumer<PokemonEntity>> ON_SPAWN = new HashMap<>();
-    private static final TriConsumer<PokemonEntity, Integer, Goal> goalHelper = (pokemonEntity, priority, goal) -> {
+    private static final TriConsumer<PokemonEntity, Integer, Goal> goalHelper = (pokemonEntity, priority, goal) ->
         pokemonEntity.goalSelector.addGoal(priority, goal);
-    };
 
     public static void init() {
         registerEvents();
 
         AbilityConfig config = LivelierPokemon.getAbilityConfig();
+        if (config.AIR_LOCK) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3, new RemoveWeatherGoal(pokemonEntity));
+            ON_SEND.putIfAbsent("airlock", cons);
+            ON_SPAWN.putIfAbsent("airlock", cons);
+        }
         if (config.BEADS_OF_RUIN) {
             Consumer<PokemonEntity> cons = (pokemonEntity) ->
                 goalHelper.accept(pokemonEntity, 3, new EntityEffectGoal(pokemonEntity, MobEffects.WEAKNESS, false));
             ON_SEND.putIfAbsent("beadsofruin", cons);
             ON_SPAWN.putIfAbsent("beadsofruin", cons);
+        }
+        if (config.CLOUD_NINE) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3, new RemoveWeatherGoal(pokemonEntity));
+            ON_SEND.putIfAbsent("cloudnine", cons);
+            ON_SPAWN.putIfAbsent("cloudnine", cons);
         }
         if (config.CURSED_BODY) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
@@ -61,12 +74,50 @@ public class SpawnHelper {
             ON_SEND.putIfAbsent("dauntlessshield", cons);
             ON_SPAWN.putIfAbsent("dauntlessshield", cons);
         }
+        if (config.DELTA_STREAM) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                Weather weather = new StrongWind(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.delta_stream_radius, config.delta_stream_duration_seconds);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("deltastream", cons);
+            ON_SPAWN.putIfAbsent("deltastream", cons);
+        }
+        if (config.DESOLATE_LAND) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.desolate_land_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.HEAT_ROCK)) duration *= 2;
+                Weather weather = new HarshSun(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.desolate_land_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("desolateland", cons);
+            ON_SPAWN.putIfAbsent("desolateland", cons);
+        }
         if (config.DISGUISE) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> pokemonEntity.addEffect(
                 new MobEffectInstance(MobEffects.ABSORPTION, -1, 0)
             );
             ON_SEND.putIfAbsent("disguise", cons);
             ON_SPAWN.putIfAbsent("disguise", cons);
+        }
+        if (config.DRIZZLE) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.drizzle_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.DAMP_ROCK)) duration *= 2;
+                Weather weather = new Rain(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.drizzle_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("drizzle", cons);
+            ON_SPAWN.putIfAbsent("drizzle", cons);
+        }
+        if (config.DROUGHT) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.drought_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.HEAT_ROCK)) duration *= 2;
+                Weather weather = new Sun(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.drought_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("drought", cons);
+            ON_SPAWN.putIfAbsent("drought", cons);
         }
         if (config.EFFECT_SPORE) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
@@ -191,6 +242,16 @@ public class SpawnHelper {
             ON_SEND.putIfAbsent("mistysurge", cons);
             ON_SPAWN.putIfAbsent("mistysurge", cons);
         }
+        if (config.ORICHALCUM_PULSE) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.orichalcum_pulse_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.HEAT_ROCK)) duration *= 2;
+                Weather weather = new Sun(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.orichalcum_pulse_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("orichalcumpulse", cons);
+            ON_SPAWN.putIfAbsent("orichalcumpulse", cons);
+        }
         if (config.PASTEL_VEIL) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new OwnerCleanseGoal(pokemonEntity)
@@ -224,6 +285,16 @@ public class SpawnHelper {
             ON_SEND.putIfAbsent("pressure", cons);
             ON_SPAWN.putIfAbsent("pressure", cons);
         }
+        if (config.PRIMORDIAL_SEA) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.primordial_sea_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.DAMP_ROCK)) duration *= 2;
+                Weather weather = new HeavyRain(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.primordial_sea_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("primordialsea", cons);
+            ON_SPAWN.putIfAbsent("primordialsea", cons);
+        }
         if (config.PSYCHIC_SURGE) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> {
                 goalHelper.accept(pokemonEntity, 3, new FieldEffectGoal(pokemonEntity, MobEffects.DAMAGE_BOOST, config.psychic_surge_radius,
@@ -255,12 +326,32 @@ public class SpawnHelper {
             ON_SEND.putIfAbsent("sandspit", cons);
             ON_SPAWN.putIfAbsent("sandspit", cons);
         }
+        if (config.SAND_STREAM) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.sand_stream_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.SMOOTH_ROCK)) duration *= 2;
+                Weather weather = new Sandstorm(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.sand_stream_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("sandstream", cons);
+            ON_SPAWN.putIfAbsent("sandstream", cons);
+        }
         if (config.SEED_SOWER) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
                 new CropGrowthGoal(pokemonEntity, config.seed_sower_radius)
             );
             ON_SEND.putIfAbsent("seedsower", cons);
             ON_SPAWN.putIfAbsent("seedsower", cons);
+        }
+        if (config.SNOW_WARNING) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> {
+                int duration = config.snow_warning_duration_seconds;
+                if (duration > 0 && pokemonEntity.getPokemon().heldItem().is(CobblemonItems.ICY_ROCK)) duration *= 2;
+                Weather weather = new Snow(pokemonEntity, pokemonEntity.blockPosition(), pokemonEntity.level(), config.snow_warning_radius, duration);
+                WeatherManager.addWeather(weather);
+            };
+            ON_SEND.putIfAbsent("snowwarning", cons);
+            ON_SPAWN.putIfAbsent("snowwarning", cons);
         }
         if (config.STATIC) {
             Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
@@ -365,6 +456,13 @@ public class SpawnHelper {
             );
             ON_SEND.putIfAbsent("Kecleon", cons);
             ON_SPAWN.putIfAbsent("Kecleon", cons);
+        }
+        if (config.SUICUNE) {
+            Consumer<PokemonEntity> cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,
+                new PurifyVillagerGoal(pokemonEntity, config.suicune_purify_radius)
+            );
+            ON_SEND.putIfAbsent("Suicune", cons);
+            ON_SPAWN.putIfAbsent("Suicune", cons);
         }
         if (config.VOLTORB) {
             Consumer<PokemonEntity> voltorb_cons = (pokemonEntity) -> goalHelper.accept(pokemonEntity, 3,

@@ -16,6 +16,8 @@ public class AbilityConfig implements ConfigData {
     public boolean AFTERMATH = true;
     public boolean aftermath_affects_environment = false;
     public double aftermath_explosion_radius = 2;
+    @Comment("Removes weather when nearby.")
+    public boolean AIR_LOCK = true;
     @Comment("Immune to projectiles")
     public boolean ARMOR_TAIL = true;
     @Comment("Nearby players will take damage and wake up when trying to sleep.")
@@ -29,6 +31,8 @@ public class AbilityConfig implements ConfigData {
     public boolean BEADS_OF_RUIN = true;
     @Comment("Immune to projectiles and explosions.")
     public boolean BULLETPROOF = true;
+    @Comment("Removes weather when nearby.")
+    public boolean CLOUD_NINE = true;
     @Comment("Chance to inflict mining fatigue when attacked.")
     public boolean CURSED_BODY = true;
     public double cursed_body_trigger_chance = 0.3;
@@ -43,8 +47,24 @@ public class AbilityConfig implements ConfigData {
     public boolean DAUNTLESS_SHIELD = true;
     @Comment("Immune to projectiles")
     public boolean DAZZLING = true;
+    @Comment("Summon strong winds on spawn and gives nearby players Jump Boost and Slow Falling. Set duration to -1 for until switched out.")
+    public boolean DELTA_STREAM = true;
+    public int delta_stream_radius = 24;
+    public int delta_stream_duration_seconds = -1;
+    @Comment("Summon extremely harsh sun on spawn. Set duration to -1 for until switched out.")
+    public boolean DESOLATE_LAND = true;
+    public int desolate_land_radius = 24;
+    public int desolate_land_duration_seconds = -1;
     @Comment("Spawn with 2 extra absorption hearts.")
     public boolean DISGUISE = true;
+    @Comment("Summon rain on spawn and extinguish fire. Set duration to -1 for until switched out.")
+    public boolean DRIZZLE = true;
+    public int drizzle_radius = 16;
+    public int drizzle_duration_seconds = 60;
+    @Comment("Summon sun on spawn and gives nearby players Night Vision. Set duration to -1 for until switched out.")
+    public boolean DROUGHT = true;
+    public int drought_radius = 16;
+    public int drought_duration_seconds = 60;
     @Comment("Chance to light attacker on fire when attacked.")
     public boolean FLAME_BODY = true;
     public double flame_body_trigger_chance = 0.3;
@@ -120,6 +140,10 @@ public class AbilityConfig implements ConfigData {
     public boolean MISTY_SURGE = true;
     public boolean misty_surge_show_terrain = true;
     public int misty_surge_radius = 12;
+    @Comment("Summon sun on spawn and gives nearby players Night Vision. Set duration to -1 for until switched out.")
+    public boolean ORICHALCUM_PULSE = true;
+    public int orichalcum_pulse_radius = 16;
+    public int orichalcum_pulse_duration_seconds = 60;
     @Comment("Periodically cleanses all status effects on its owner.")
     public boolean PASTEL_VEIL = true;
     @Comment("Chance to inflict wither when attacked.")
@@ -138,6 +162,10 @@ public class AbilityConfig implements ConfigData {
     @Comment("Weapons that damage this Pokemon lose more durability.")
     public boolean PRESSURE = true;
     public int pressure_durability_loss = 3;
+    @Comment("Summon heavy rain on spawn. Set duration to -1 for until switched out.")
+    public boolean PRIMORDIAL_SEA = true;
+    public int primordial_sea_radius = 24;
+    public int primordial_sea_duration_seconds = -1;
     @Comment("All nearby projectiles stop and nearby Psychic Pokemon gain Strength.")
     public boolean PSYCHIC_SURGE = true;
     public boolean psychic_surge_show_terrain = true;
@@ -154,9 +182,17 @@ public class AbilityConfig implements ConfigData {
     public boolean SAND_SPIT = true;
     public double sand_spit_trigger_chance = 0.3;
     public int sand_spit_duration = 120;
+    @Comment("Summon sandstorm on spawn and damages nearby monsters (excluding Husk). Set duration to -1 for until switched out.")
+    public boolean SAND_STREAM = true;
+    public int sand_stream_radius = 16;
+    public int sand_stream_duration_seconds = 60;
     @Comment("Periodically grows nearby crops.")
     public boolean SEED_SOWER = true;
     public int seed_sower_radius = 16;
+    @Comment("Summon snow on spawn and freezes nearby monsters (excluding Stray). Set duration to -1 for until switched out.")
+    public boolean SNOW_WARNING = true;
+    public int snow_warning_radius = 16;
+    public int snow_warning_duration_seconds = 60;
     @Comment("Chance to inflict slowness when attacked.")
     public boolean STATIC = true;
     public double static_trigger_chance = 0.3;
@@ -218,11 +254,14 @@ public class AbilityConfig implements ConfigData {
     @Comment("Geodude can spawn rarely when stone is broken.")
     public boolean GEODUDE = true;
     public double geodude_spawn_rate = 0.002;
-    @Comment("Golurk can be created using oxidised copper blocks and a carved pumpkin.")
+    @Comment("Golurk can be created using chiseled polished black tumblestone and a carved pumpkin.")
     public boolean GOLURK = true;
     @Comment("Kecleon turn invisible for a short time when attacked.")
     public boolean KECLEON = true;
     public int kecleon_duration = 120;
+    @Comment("Suicune will purify nearby Zombie Villagers when holding a Golden Apple.")
+    public boolean SUICUNE = true;
+    public int suicune_purify_radius = 8;
     @Comment("Non-shiny Voltorb and Electrode will chase players and explode when close.")
     public boolean VOLTORB = true;
     public boolean voltorb_affects_environment = false;

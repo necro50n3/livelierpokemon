@@ -3,8 +3,11 @@ package necro.livelier.pokemon.fabric;
 import necro.livelier.pokemon.common.LivelierPokemon;
 import necro.livelier.pokemon.common.compat.ModCompat;
 import necro.livelier.pokemon.common.events.GeodudeSpawnEvent;
+import necro.livelier.pokemon.common.weather.WeatherManager;
+import necro.livelier.pokemon.fabric.network.NetworkMessages;
 import necro.livelier.pokemon.fabric.registries.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -25,7 +28,11 @@ public class LivelierPokemonFabric implements ModInitializer {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getId()));
         }
 
+        NetworkMessages.registerPayload();
+        WeatherManager.WEATHER_PACKET = NetworkMessages::sendPacketToPlayer;
+
         PlayerBlockBreakEvents.AFTER.register((level, player, blockPos, blockState, entity) -> GeodudeSpawnEvent.onBlockBreak(level, blockPos, blockState));
+        ServerTickEvents.END_SERVER_TICK.register((server) -> WeatherManager.tick());
     }
 
 }

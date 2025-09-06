@@ -3,11 +3,15 @@
   "package": "necro.livelier.pokemon.common.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BiomeMixin",
     "CreeperMixin",
+    "EntityMixin",
     "FightOrFlightMixin",
+    "FireBlockMixin",
     "GolurkMixin",
     "LightningRodMixin",
     "LivingEntityMixin",
+    "MobMixin",
     "PastureBlockMixin",
     "PoisonEffectMixin",
     "PokemonEntityMixin",
@@ -18,5 +22,11 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "client.ClientLevelMixin",
+    "client.FogRendererMixin",
+    ,
+    "client.MinecraftMixin"
+  ]
 }

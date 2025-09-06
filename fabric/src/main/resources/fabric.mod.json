@@ -16,6 +16,9 @@
     ],
     "client": [
       "necro.livelier.pokemon.fabric.LivelierPokemonFabricClient"
+    ],
+    "modmenu": [
+      "necro.livelier.pokemon.fabric.compat.modmenu.LivelierPokemonModMenuIntegration"
     ]
   },
   "mixins": [

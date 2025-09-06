@@ -72,11 +72,28 @@ Unique effects that are uncategorised.
 - Abra: Will randomly teleport around
 - Voltorb/Electrode: Will target nearby players and explode when nearby. Does not trigger on shiny Pokemon
 - Damp: Prevents Creepers, Voltorb and Electrode from exploding
+- Suicune: If Suicune is holding a Golden Apple, it will consume the apple and purify all nearby Zombie Villagers
+
+
+## Weather Effects
+Summons a local weather effect. Duration can be extended with the right "rock" held item.
+- Rain: Extinguishes fire and allows Riptide Tridents to be used
+  - Summoned by Drizzle and Primordial Sea
+- Snow: Slows down and freezes nearby hostile mobs (excluding Stray)
+  - Summoned by Snow Warning
+- Sandstorm: Damages nearby hostile mobs (excluding Husk)
+  - Summoned by Sand Stream
+- Sun: Grants nearby players Night Vision
+  - Summoned by Drought, Desolate Land and Orichalcum Pulse
+- Strong Winds: Grants nearby players Jump Boost and Slow Falling
+  - Summoned by Delta Stream
+- Clear: Removes the effects of nearby weather
+  - Summoned by Air Lock and Cloud Nine
 
 
 ## Other
 Vanilla Minecraft mechanics modified to incorporate Cobblemon.
-- Golurk: You can craft Golurk using Oxidized Copper Blocks the same way you would build an Iron Golem
+- Golurk: You can craft Golurk using Chiseled Polished Black Tumblestone the same way you would build an Iron Golem
 - Creepers: Creepers flee from cat Pokemon
 - Skeletons: Skeletons flee from dog Pokemon
 - Mining: Mining in the overworld has a small chance to spawn a Geodude

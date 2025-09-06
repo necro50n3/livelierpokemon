@@ -2,6 +2,8 @@ package necro.livelier.pokemon.neoforge;
 
 import necro.livelier.pokemon.common.LivelierPokemon;
 import necro.livelier.pokemon.common.compat.ModCompat;
+import necro.livelier.pokemon.common.weather.WeatherManager;
+import necro.livelier.pokemon.neoforge.network.NetworkMessages;
 import necro.livelier.pokemon.neoforge.registries.EffectRegistryNeoForge;
 import necro.livelier.pokemon.neoforge.registries.ParticleRegistryNeoForge;
 import net.neoforged.bus.api.IEventBus;
@@ -22,6 +24,8 @@ public class LivelierPokemonNeoForge {
 
             EffectRegistryNeoForge.MOB_EFFECTS.register(modBus);
         }
+
+        WeatherManager.WEATHER_PACKET = NetworkMessages::sendPacketToPlayer;
 
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(ModList.get().isLoaded(mod.getId()));;
