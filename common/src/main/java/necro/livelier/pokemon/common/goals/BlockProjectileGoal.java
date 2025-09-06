@@ -1,5 +1,6 @@
 package necro.livelier.pokemon.common.goals;
 
+import com.cobblemon.mod.common.entity.pokeball.EmptyPokeBallEntity;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import necro.livelier.pokemon.common.util.IFreeze;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -22,7 +23,9 @@ public class BlockProjectileGoal extends Goal {
     @Override
     public void tick() {
         this.pokemonEntity.level().getEntitiesOfClass(Projectile.class, this.pokemonEntity.getBoundingBox().inflate(this.radius)).forEach(
-            projectile -> ((IFreeze) projectile).livelierpokemon$SetTicksFrozen(10)
+            projectile -> {
+                if (!(projectile instanceof EmptyPokeBallEntity)) ((IFreeze) projectile).livelierpokemon$SetTicksFrozen(10);
+            }
         );
     }
 
