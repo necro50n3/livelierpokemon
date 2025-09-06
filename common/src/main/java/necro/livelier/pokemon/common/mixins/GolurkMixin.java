@@ -1,6 +1,7 @@
 package necro.livelier.pokemon.common.mixins;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.CobblemonBlocks;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import necro.livelier.pokemon.common.LivelierPokemon;
@@ -80,9 +81,9 @@ public abstract class GolurkMixin extends HorizontalDirectionalBlock {
     @Unique
     private BlockPattern livelierpokemon$getGolurkBase() {
         if (this.livelierpokemon$golurkBase == null) {
-            this.livelierpokemon$golurkBase = BlockPatternBuilder.start().aisle("~^~", "###", "~#~")
+            this.livelierpokemon$golurkBase = BlockPatternBuilder.start().aisle("~^~", "#@#", "~#~")
                 .where('^', BlockInWorld.hasState(GOLURK_HEAD_PREDICATE))
-                .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.OXIDIZED_COPPER)))
+                .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(CobblemonBlocks.CHISELED_POLISHED_BLACK_TUMBLESTONE)))
                 .where('~', (blockInWorld) -> blockInWorld.getState().isAir()).build();
         }
         return this.livelierpokemon$golurkBase;
@@ -91,8 +92,8 @@ public abstract class GolurkMixin extends HorizontalDirectionalBlock {
     @Unique
     private BlockPattern livelierpokemon$getGolurkFull() {
         if (this.livelierpokemon$golurkFull == null) {
-            this.livelierpokemon$golurkFull = BlockPatternBuilder.start().aisle("~ ~", "###", "~#~")
-                .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.OXIDIZED_COPPER)))
+            this.livelierpokemon$golurkFull = BlockPatternBuilder.start().aisle("~ ~", "#@#", "~#~")
+                .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(CobblemonBlocks.CHISELED_POLISHED_BLACK_TUMBLESTONE)))
                 .where('~', blockInWorld -> blockInWorld.getState().isAir()).build();
         }
         return this.livelierpokemon$golurkFull;
