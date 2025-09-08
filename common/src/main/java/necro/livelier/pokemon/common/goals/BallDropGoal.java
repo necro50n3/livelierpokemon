@@ -19,6 +19,7 @@ public class BallDropGoal extends FollowOwnerGoal {
     @Override
     public boolean canContinueToUse() {
         if (!this.pokemonEntity.getNavigation().isDone()) return true;
+        else if (this.pokemonEntity.isBusy()) return false;
         else if (this.pokemonEntity.getPokemon().heldItem().isEmpty()) return false;
 
         ItemStack pokeBall = this.pokemonEntity.getPokemon().removeHeldItem();

@@ -25,6 +25,7 @@ public class BallFetchGoal extends Goal {
     @Override
     public boolean canUse() {
         if (++this.tick < this.delay) return false;
+        else if (this.pokemonEntity.isBusy()) return false;
         else if (!this.pokemonEntity.getPokemon().heldItem().isEmpty()) this.pokeBallEntity = null;
         return true;
     }
@@ -33,6 +34,7 @@ public class BallFetchGoal extends Goal {
     public boolean canContinueToUse() {
         if (!this.pokemonEntity.getNavigation().isDone()) return true;
         else if (this.pokeBallEntity == null) return false;
+        else if (this.pokemonEntity.isBusy()) return false;
 
         ItemStack item = this.pokeBallEntity.getPokeBall().stack(1);
         pokemonEntity.getPokemon().swapHeldItem(item, false);

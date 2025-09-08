@@ -24,6 +24,11 @@ public class BallFetchEvent {
         if (fetcher == null) return;
         else if (!fetcher.getPokemon().heldItem().isEmpty()) return;
         else if (!(fetcher.getOwner() instanceof Player)) return;
+        else if (fetcher.isBusy()) {
+            fetcher.getPokemon().swapHeldItem(event.getPokeBallEntity().getPokeBall().stack(1), false);
+            return;
+        }
+
         Optional<WrappedGoal> goal = fetcher.goalSelector.getAvailableGoals().stream().filter(wrappedGoal -> wrappedGoal.getGoal() instanceof BallFetchGoal).findFirst();
         if (goal.isPresent() && ((BallFetchGoal) goal.get().getGoal()).pokeBallEntity != null) return;
         fetcher.goalSelector.addGoal(3, new BallFetchGoal(fetcher, event.getPokeBallEntity(), event.getCaptureResult().getNumberOfShakes()));
