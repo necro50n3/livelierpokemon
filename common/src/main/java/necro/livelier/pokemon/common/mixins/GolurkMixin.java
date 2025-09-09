@@ -81,7 +81,7 @@ public abstract class GolurkMixin extends HorizontalDirectionalBlock {
     @Unique
     private BlockPattern livelierpokemon$getGolurkBase() {
         if (this.livelierpokemon$golurkBase == null) {
-            this.livelierpokemon$golurkBase = BlockPatternBuilder.start().aisle("~^~", "###", "~#~")
+            this.livelierpokemon$golurkBase = BlockPatternBuilder.start().aisle("~^~", "#@#", "~#~")
                 .where('^', BlockInWorld.hasState(GOLURK_HEAD_PREDICATE))
                 .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(CobblemonBlocks.CHISELED_POLISHED_BLACK_TUMBLESTONE)))
                 .where('~', (blockInWorld) -> blockInWorld.getState().isAir()).build();
@@ -92,7 +92,7 @@ public abstract class GolurkMixin extends HorizontalDirectionalBlock {
     @Unique
     private BlockPattern livelierpokemon$getGolurkFull() {
         if (this.livelierpokemon$golurkFull == null) {
-            this.livelierpokemon$golurkFull = BlockPatternBuilder.start().aisle("~ ~", "###", "~#~")
+            this.livelierpokemon$golurkFull = BlockPatternBuilder.start().aisle("~ ~", "#@#", "~#~")
                 .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(CobblemonBlocks.CHISELED_POLISHED_BLACK_TUMBLESTONE)))
                 .where('~', blockInWorld -> blockInWorld.getState().isAir()).build();
         }
