@@ -16,8 +16,6 @@ public class ImmunityHelper {
         AbilityConfig config = LivelierPokemon.getAbilityConfig();
         if (config.WONDER_GUARD && SpawnHelper.hasAbility(pokemon, "wonderguard") && !damageSource.is(LivelierDamageType.BYPASSES_WONDER_GUARD)
         ) return true;
-        else if (config.LIGHTNING_ROD && SpawnHelper.hasAbility(pokemon, "lightningrod") && damageSource.is(DamageTypes.LIGHTNING_BOLT)
-        ) return true;
         else if (config.BULLETPROOF && SpawnHelper.hasAbility(pokemon, "bulletproof") &&
             (damageSource.is(DamageTypeTags.IS_PROJECTILE) || damageSource.is(DamageTypeTags.IS_EXPLOSION))
         ) return true;

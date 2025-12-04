@@ -123,8 +123,6 @@ public class AbilityConfig implements ConfigData {
     @Comment("Inflicts damage when attacked.")
     public boolean IRON_BARBS = true;
     public int iron_barbs_damage = 4;
-    @Comment("Lightning is redirected to this Pokemon")
-    public boolean LIGHTNING_ROD = true;
     @Comment("Immune to Slowness and Paralysis")
     public boolean LIMBER = true;
     @Comment("Status effects are inflicted to the attacker instead.")
@@ -271,8 +269,6 @@ public class AbilityConfig implements ConfigData {
     @ConfigEntry.Category("Other")
     @Comment("Fire types, Bonsly and Sudowoodo look for cover in the rain.")
     public boolean AVOID_RAIN = true;
-    @Comment("Creepers flee from cat Pokemon.")
-    public boolean CREEPER_FLEE_CAT = true;
-    @Comment("Skeletons flee from dog Pokemon.")
-    public boolean SKELETON_FLEE_DOG = true;
+    @Comment("Spiders flee from armadillo Pokemon.")
+    public boolean SPIDER_FLEE_ARMADILLO = true;
 }
