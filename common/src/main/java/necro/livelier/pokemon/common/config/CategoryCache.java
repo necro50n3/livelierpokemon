@@ -10,7 +10,7 @@ public class CategoryCache {
     private static Set<String> ARMADILLO_SET;
 
     public static void init() {
-        ARMADILLO_SET = new HashSet<>(List.of(LivelierPokemon.getCategoryConfig().ARMADILLO_POKEMON));
+        ARMADILLO_SET = new HashSet<>(List.of(LivelierPokemon.getCategoryConfig().ARMADILLO_LIKE_POKEMON));
     }
 
     public static Set<String> getArmadillos() {

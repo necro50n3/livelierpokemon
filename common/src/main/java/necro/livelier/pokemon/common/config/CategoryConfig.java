@@ -6,8 +6,15 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name="livelierpokemon-categories")
 public class CategoryConfig implements ConfigData {
-    @ConfigEntry.Category("Armadillo Pokemon")
-    public String[] ARMADILLO_POKEMON = {
-        "Meowth"
+    @ConfigEntry.Category("Spider Repellent Pokemon")
+    public String[] ARMADILLO_LIKE_POKEMON = {
+        "Sandshrew",
+        "Sandslash",
+        "Cyndaquil",
+        "Quilava",
+        "Typhlosion",
+        "Anorith",
+        "Armaldo",
+        "Heatmor"
     };
 }
