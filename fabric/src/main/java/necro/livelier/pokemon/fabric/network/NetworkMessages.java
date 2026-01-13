@@ -4,6 +4,7 @@ import necro.livelier.pokemon.common.network.SetWeatherPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -21,6 +22,6 @@ public class NetworkMessages {
     }
 
     public static void handle(SetWeatherPacket packet, ClientPlayNetworking.Context context) {
-        packet.handle();
+        packet.handle((ClientLevel) context.player().level());
     }
 }

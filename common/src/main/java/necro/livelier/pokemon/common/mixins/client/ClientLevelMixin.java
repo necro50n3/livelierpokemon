@@ -1,5 +1,6 @@
 package necro.livelier.pokemon.common.mixins.client;
 
+import necro.livelier.pokemon.common.util.ITransition;
 import necro.livelier.pokemon.common.weather.client.ClientWeather;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
@@ -23,7 +24,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 @Mixin(ClientLevel.class)
-public abstract class ClientLevelMixin extends Level {
+public abstract class ClientLevelMixin extends Level implements ITransition {
     protected ClientLevelMixin(WritableLevelData writableLevelData, ResourceKey<Level> resourceKey, RegistryAccess registryAccess, Holder<DimensionType> holder, Supplier<ProfilerFiller> supplier, boolean bl, boolean bl2, long l, int i) {
         super(writableLevelData, resourceKey, registryAccess, holder, supplier, bl, bl2, l, i);
     }
@@ -32,10 +33,25 @@ public abstract class ClientLevelMixin extends Level {
     public abstract ClientLevel.@NotNull ClientLevelData getLevelData();
 
     @Unique
-    private static final float TRANSITION_SPEED = 0.01f;
+    private boolean livelier_isTransitioning = false;
+
+    @Unique
+    private double livelier_targetRainLevel = -1;
+
+    @Unique
+    private static final float TRANSITION_SPEED = 0.02f;
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void tickInject(BooleanSupplier booleanSupplier, CallbackInfo ci) {
+        if (!this.livelier_isTransitioning) return;
+        if (this.livelier_targetRainLevel == -1) this.livelier_targetRainLevel = (this.isRaining() || this.isThundering()) ? 1 : 0;
+
+        if (this.livelier_isRaining() && this.livelier_targetRainLevel == 0f) this.livelier_targetRainLevel = 1f;
+        else if (this.livelier_isNotRaining() && this.livelier_targetRainLevel == 1f) this.livelier_targetRainLevel = 0f;
+
+        double rainLevel = this.livelier_step(this.rainLevel, this.livelier_targetRainLevel);
+        this.setRainLevel((float) rainLevel);
+        if (rainLevel == this.livelier_targetRainLevel) this.livelier_isTransitioning = false;
     }
 
     @Inject(method = "getSkyColor", at = @At("RETURN"), cancellable = true)
@@ -48,6 +64,30 @@ public abstract class ClientLevelMixin extends Level {
     private void getCloudColorInject(float partialTicks, CallbackInfoReturnable<Vec3> cir) {
         Vec3 baseColor = cir.getReturnValue();
         cir.setReturnValue(this.livelier_getTargetCloudColor(baseColor));
+    }
+
+    @Override
+    public void livelier_setTransitioning() {
+        this.livelier_isTransitioning = true;
+    }
+
+    @Override
+    public boolean livelier_isTransitioning() {
+        return this.livelier_isTransitioning;
+    }
+
+    @Unique
+    private boolean livelier_isRaining() {
+        if (ClientWeather.isRainingOrSnowing()) return true;
+        else if (ClientWeather.isNotRainingOrSnowing()) return false;
+        else return this.getLevelData().isRaining() || this.getLevelData().isThundering();
+    }
+
+    @Unique
+    private boolean livelier_isNotRaining() {
+        if (ClientWeather.isRainingOrSnowing()) return false;
+        else if (ClientWeather.isNotRainingOrSnowing()) return true;
+        else return !this.getLevelData().isRaining() && !this.getLevelData().isThundering();
     }
 
     @Unique

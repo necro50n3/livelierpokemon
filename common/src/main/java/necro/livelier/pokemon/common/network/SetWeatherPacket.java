@@ -1,8 +1,10 @@
 package necro.livelier.pokemon.common.network;
 
 import necro.livelier.pokemon.common.LivelierPokemon;
+import necro.livelier.pokemon.common.util.ITransition;
 import necro.livelier.pokemon.common.weather.WeatherType;
 import necro.livelier.pokemon.common.weather.client.ClientWeather;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -25,7 +27,8 @@ public record SetWeatherPacket(WeatherType weatherType) implements CustomPacketP
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() { return PACKET_TYPE; }
 
-    public void handle() {
+    public void handle(ClientLevel level) {
         ClientWeather.setWeather(this.weatherType);
+        ((ITransition) level).livelier_setTransitioning();
     }
 }

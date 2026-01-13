@@ -2,6 +2,7 @@ package necro.livelier.pokemon.neoforge.network;
 
 import necro.livelier.pokemon.common.LivelierPokemon;
 import necro.livelier.pokemon.common.network.SetWeatherPacket;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -11,7 +12,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = LivelierPokemon.MODID)
+@EventBusSubscriber(modid = LivelierPokemon.MODID)
 public class NetworkMessages {
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
@@ -24,6 +25,6 @@ public class NetworkMessages {
     }
 
     public static void handle(SetWeatherPacket packet, IPayloadContext context) {
-        context.enqueueWork(packet::handle);
+        context.enqueueWork(() -> packet.handle((ClientLevel) context.player().level()));
     }
 }
