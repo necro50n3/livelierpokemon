@@ -18,7 +18,7 @@ public abstract class ProjectileMixin extends Entity implements IFreeze {
     @Shadow public abstract void lerpMotion(double d, double e, double f);
 
     @Unique
-    public int livelierpokemon$ticksFrozen;
+    public int livelier_ticksFrozen;
 
     public ProjectileMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -26,12 +26,12 @@ public abstract class ProjectileMixin extends Entity implements IFreeze {
 
     @Inject(method = "tick()V", at = @At("HEAD"), cancellable = true)
     private void tickInject(CallbackInfo ci) {
-        if (this.livelierpokemon$ticksFrozen == 1) {
+        if (this.livelier_ticksFrozen == 1) {
             this.noPhysics = false;
             this.setNoGravity(false);
         }
-        else if (this.livelierpokemon$ticksFrozen > 0) {
-            this.livelierpokemon$ticksFrozen--;
+        else if (this.livelier_ticksFrozen > 0) {
+            this.livelier_ticksFrozen--;
             this.setDeltaMovement(0, 0, 0);
             this.noPhysics = true;
             this.setNoGravity(true);
@@ -40,8 +40,8 @@ public abstract class ProjectileMixin extends Entity implements IFreeze {
     }
 
     @Override
-    public void livelierpokemon$SetTicksFrozen(int ticks) {
+    public void livelier_SetTicksFrozen(int ticks) {
         if ((Entity) this instanceof EmptyPokeBallEntity) return;
-        this.livelierpokemon$ticksFrozen = ticks;
+        this.livelier_ticksFrozen = ticks;
     }
 }

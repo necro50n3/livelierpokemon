@@ -1,6 +1,5 @@
 package necro.livelier.pokemon.common.mixins;
 
-import necro.livelier.pokemon.common.LivelierPokemon;
 import necro.livelier.pokemon.common.damage.LivelierDamageType;
 import necro.livelier.pokemon.common.weather.WeatherManager;
 import necro.livelier.pokemon.common.weather.WeatherType;
@@ -22,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Mob.class)
 public abstract class MobMixin extends LivingEntity {
     @Unique
-    private int ticksInSnow;
+    private int livelier_ticksInSnow;
 
     protected MobMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
@@ -43,12 +42,12 @@ public abstract class MobMixin extends LivingEntity {
             if (monster instanceof Stray) return;
             monster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 0, false, false, false));
 
-            this.ticksInSnow = Math.min(this.getTicksRequiredToFreeze(), this.ticksInSnow + 1);
-            if (this.tickCount % 40 == 0 && this.ticksInSnow > 4) {
+            this.livelier_ticksInSnow = Math.min(this.getTicksRequiredToFreeze(), this.livelier_ticksInSnow + 1);
+            if (this.tickCount % 40 == 0 && this.livelier_ticksInSnow > 4) {
                 this.hurt(this.damageSources().freeze(), 1.0f);
             }
             return;
         }
-        this.ticksInSnow = 0;
+        this.livelier_ticksInSnow = 0;
     }
 }

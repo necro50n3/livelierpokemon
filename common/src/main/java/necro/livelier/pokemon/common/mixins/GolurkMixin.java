@@ -35,11 +35,11 @@ import java.util.function.Predicate;
 public abstract class GolurkMixin extends HorizontalDirectionalBlock {
     @Unique
     @Nullable
-    private BlockPattern livelierpokemon$golurkBase;
+    private BlockPattern livelier_golurkBase;
 
     @Unique
     @Nullable
-    private BlockPattern livelierpokemon$golurkFull;
+    private BlockPattern livelier_golurkFull;
 
     @Unique
     private static final Predicate<BlockState> GOLURK_HEAD_PREDICATE = state -> state != null && (state.is(Blocks.CARVED_PUMPKIN) || state.is(Blocks.JACK_O_LANTERN));
@@ -51,17 +51,17 @@ public abstract class GolurkMixin extends HorizontalDirectionalBlock {
     @Inject(method = "trySpawnGolem(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V", at = @At("HEAD"))
     private void trySpawnGolemInject(Level level, BlockPos blockPos, CallbackInfo ci) {
         if (!LivelierPokemon.getAbilityConfig().GOLURK) return;
-        BlockPattern.BlockPatternMatch blockPatternMatch = this.livelierpokemon$getGolurkFull().find(level, blockPos);
+        BlockPattern.BlockPatternMatch blockPatternMatch = this.livelier_getGolurkFull().find(level, blockPos);
         if (blockPatternMatch != null) {
-            PokemonEntity golurk = livelierpokemon$setGolurkEntity(level);
+            PokemonEntity golurk = livelier_setGolurkEntity(level);
             if (golurk != null) {
-                livelierpokemon$spawnGolurk(level, blockPatternMatch, golurk, blockPatternMatch.getBlock(0, 2, 0).getPos());
+                livelier_spawnGolurk(level, blockPatternMatch, golurk, blockPatternMatch.getBlock(0, 2, 0).getPos());
             }
         }
     }
 
     @Unique
-    private void livelierpokemon$spawnGolurk(Level level, BlockPattern.BlockPatternMatch blockPatternMatch, PokemonEntity golurk, BlockPos blockPos) {
+    private void livelier_spawnGolurk(Level level, BlockPattern.BlockPatternMatch blockPatternMatch, PokemonEntity golurk, BlockPos blockPos) {
         CarvedPumpkinBlock.clearPatternBlocks(level, blockPatternMatch);
         golurk.moveTo((double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.05, (double) blockPos.getZ() + 0.5, 0.0f, 0.0f);
         level.addFreshEntity(golurk);
@@ -75,32 +75,32 @@ public abstract class GolurkMixin extends HorizontalDirectionalBlock {
 
     @Inject(method = "canSpawnGolem(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;)Z", at = @At("HEAD"), cancellable = true)
     private void canSpawnGolemInject(LevelReader world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (this.livelierpokemon$getGolurkBase().find(world, pos) != null) cir.setReturnValue(true);
+        if (this.livelier_getGolurkBase().find(world, pos) != null) cir.setReturnValue(true);
     }
 
     @Unique
-    private BlockPattern livelierpokemon$getGolurkBase() {
-        if (this.livelierpokemon$golurkBase == null) {
-            this.livelierpokemon$golurkBase = BlockPatternBuilder.start().aisle("~^~", "###", "~#~")
+    private BlockPattern livelier_getGolurkBase() {
+        if (this.livelier_golurkBase == null) {
+            this.livelier_golurkBase = BlockPatternBuilder.start().aisle("~^~", "###", "~#~")
                 .where('^', BlockInWorld.hasState(GOLURK_HEAD_PREDICATE))
                 .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(CobblemonBlocks.CHISELED_POLISHED_BLACK_TUMBLESTONE)))
                 .where('~', (blockInWorld) -> blockInWorld.getState().isAir()).build();
         }
-        return this.livelierpokemon$golurkBase;
+        return this.livelier_golurkBase;
     }
 
     @Unique
-    private BlockPattern livelierpokemon$getGolurkFull() {
-        if (this.livelierpokemon$golurkFull == null) {
-            this.livelierpokemon$golurkFull = BlockPatternBuilder.start().aisle("~ ~", "###", "~#~")
+    private BlockPattern livelier_getGolurkFull() {
+        if (this.livelier_golurkFull == null) {
+            this.livelier_golurkFull = BlockPatternBuilder.start().aisle("~ ~", "###", "~#~")
                 .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(CobblemonBlocks.CHISELED_POLISHED_BLACK_TUMBLESTONE)))
                 .where('~', blockInWorld -> blockInWorld.getState().isAir()).build();
         }
-        return this.livelierpokemon$golurkFull;
+        return this.livelier_golurkFull;
     }
 
     @Unique
-    private PokemonEntity livelierpokemon$setGolurkEntity(Level level) {
+    private PokemonEntity livelier_setGolurkEntity(Level level) {
         PokemonProperties properties = PokemonProperties.Companion.parse("species=golurk", " ", "=");
         properties.setLevel((int) (Math.random() * Math.min(30, Cobblemon.config.getMaxPokemonLevel()) + 1));
         if (properties.getSpecies() == null) return null;

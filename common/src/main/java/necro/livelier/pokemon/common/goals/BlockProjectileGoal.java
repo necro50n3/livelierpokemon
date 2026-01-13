@@ -24,7 +24,7 @@ public class BlockProjectileGoal extends Goal {
     public void tick() {
         this.pokemonEntity.level().getEntitiesOfClass(Projectile.class, this.pokemonEntity.getBoundingBox().inflate(this.radius)).forEach(
             projectile -> {
-                if (!(projectile instanceof EmptyPokeBallEntity)) ((IFreeze) projectile).livelierpokemon$SetTicksFrozen(10);
+                if (!(projectile instanceof EmptyPokeBallEntity)) ((IFreeze) projectile).livelier_SetTicksFrozen(10);
             }
         );
     }
