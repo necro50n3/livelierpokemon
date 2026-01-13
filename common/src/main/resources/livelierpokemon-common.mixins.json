@@ -1,29 +1,30 @@
 {
-    "required": true,
-    "package": "necro.livelier.pokemon.common.mixins",
-    "compatibilityLevel": "JAVA_21",
-    "mixins": [
-        "BiomeMixin",
-        "EntityMixin",
-        "FightOrFlightMixin",
-        "FireBlockMixin",
-        "GolurkMixin",
-        "LivingEntityMixin",
-        "MobMixin",
-        "PastureBlockMixin",
-        "PoisonEffectMixin",
-        "PokemonEntityMixin",
-        "ProjectileMixin",
-        "SpiderMixin",
-        "TamableAnimalMixin",
-        "VillagerMixin"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    },
-    "client": [
-        "client.ClientLevelMixin",
-        "client.FogRendererMixin",
-        "client.MinecraftMixin"
-    ]
+  "required": true,
+  "package": "necro.livelier.pokemon.common.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BiomeMixin",
+    "EntityMixin",
+    "FightOrFlightMixin",
+    "FireBlockMixin",
+    "GolurkMixin",
+    "LivingEntityMixin",
+    "MobMixin",
+    "PastureBlockMixin",
+    "PoisonEffectMixin",
+    "PokemonEntityMixin",
+    "ProjectileMixin",
+      "SpiderMixin",
+    "TamableAnimalMixin",
+    "VillagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "client.ClientLevelMixin",
+    "client.FogRendererMixin",
+    ,
+    "client.MinecraftMixin"
+  ]
 }
