@@ -25,7 +25,7 @@ public class BallFetchEvent {
         else if (!fetcher.getPokemon().heldItem().isEmpty()) return;
         else if (!(fetcher.getOwner() instanceof Player)) return;
         else if (fetcher.isBusy()) {
-            fetcher.getPokemon().swapHeldItem(event.getPokeBallEntity().getPokeBall().stack(1), false);
+            fetcher.getPokemon().swapHeldItem(event.getPokeBallEntity().getPokeBall().stack(1), false, false);
             return;
         }
 

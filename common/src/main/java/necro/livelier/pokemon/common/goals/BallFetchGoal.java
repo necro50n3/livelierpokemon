@@ -37,7 +37,7 @@ public class BallFetchGoal extends Goal {
         else if (this.pokemonEntity.isBusy()) return false;
 
         ItemStack item = this.pokeBallEntity.getPokeBall().stack(1);
-        pokemonEntity.getPokemon().swapHeldItem(item, false);
+        pokemonEntity.getPokemon().swapHeldItem(item, false, false);
         this.pokemonEntity.goalSelector.addGoal(3, new BallDropGoal(this.pokemonEntity));
         this.stop();
         return false;
