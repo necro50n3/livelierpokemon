@@ -68,7 +68,6 @@ Unique effects that are uncategorised.
 - Fire Types / Sudowoodo / Bonsly: Will escape to shade during rain and thunderstorm
 - Bad Dreams: Players who sleep nearby will wake up and take damage
 - Unaware: The Pokemon takes fixed damage from all sources
-- Lightning Rod: If lightning strikes nearby it will be redirected to the Pokemon and have no effect
 - Abra: Will randomly teleport around
 - Voltorb/Electrode: Will target nearby players and explode when nearby. Does not trigger on shiny Pokemon
 - Damp: Prevents Creepers, Voltorb and Electrode from exploding
@@ -94,6 +93,5 @@ Summons a local weather effect. Duration can be extended with the right "rock" h
 ## Other
 Vanilla Minecraft mechanics modified to incorporate Cobblemon.
 - Golurk: You can craft Golurk using Chiseled Polished Black Tumblestone the same way you would build an Iron Golem
-- Creepers: Creepers flee from cat Pokemon
-- Skeletons: Skeletons flee from dog Pokemon
+- Spiders: Spiders flee from armadillo Pokemon
 - Mining: Mining in the overworld has a small chance to spawn a Geodude
